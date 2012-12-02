@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Threshold stat:</b>
+  <%= @alert.threshold_stat %>
+</p>
+
+<p>
+  <b>Threshold value:</b>
+  <%= @alert.threshold_value %>
+</p>
+
+<p>
+  <b>Active:</b>
+  <%= @alert.active %>
+</p>
+
+<p>
+  <b>Start time:</b>
+  <%= @alert.start_time %>
+</p>
+
+<p>
+  <b>End time:</b>
+  <%= @alert.end_time %>
+</p>
+
+
+<%= link_to 'Edit', edit_alert_path(@alert) %> |
+<%= link_to 'Back', alerts_path %>

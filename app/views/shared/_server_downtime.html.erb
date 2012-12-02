@@ -1,0 +1,33 @@
+<h1>Network Downtime (1 month)</h1>
+<% if !params[:downview].nil? %>
+    <table>
+      <tr>
+        <th>Server</th>
+        <th>Date</th>
+      </tr>
+      <% @downtimes.each do |d| %>
+          <tr>
+            <td>
+              <% begin %><%= link_to d.server.hostname, d.server %>
+              <% rescue %>Server no longer available
+              <% end %></td>
+            <td><%= d.created_at %></td>
+          </tr>
+      <% end %>
+    </table>
+<% else %>
+    <table>
+      <tr>
+        <th>Server</th>
+        <th>Date</th>
+      </tr>
+
+        <% @downtimes.each do |k| %>
+        <tr>
+          <td><%=link_to k.server.hostname, k.server %> ( <%= k.server.ip %> )</td>
+          <td><%=k.created_at%></td>
+        </tr>
+        <% end %>
+
+    </table>
+<% end %>

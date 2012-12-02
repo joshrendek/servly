@@ -1,0 +1,28 @@
+<div align="center">
+
+  <table id="change_pw">
+  <tr>
+    <th colspan="2"><h1>Change Your Password</h1></th>
+  </tr>
+<%= form_for(:u, :url => user_password_index_path) do |f| %>
+  <tr>
+    <td><%= f.label :current_password %></td>
+    <td><%= f.password_field :current_password, :class => 'title' %></td>
+  </tr>
+  <tr>
+    <td><%= f.label :new_password %></td>
+    <td><%= f.password_field :password, :class => 'title'  %></td>
+  </tr>
+  <tr>
+    <td><%= f.label :repeat_password %></td>
+    <td><%= f.password_field :repeat_password, :class => 'title'  %></td>
+  </tr>
+
+  <tr>
+    <td colspan="2" class="actions loginactions"><%= f.submit "Update Password" %></td>
+  </tr>
+<% end %>
+
+</table>
+</div>
+

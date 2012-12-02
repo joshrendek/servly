@@ -1,0 +1,4 @@
+<div class="mark">
+  <%= link_to "Mark All Read", mark_triggered_alert_path(@trigger.first.id) unless @trigger.first.nil? %>
+</div>
+<%= render :partial => 'alerts' %>

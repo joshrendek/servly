@@ -1,0 +1,34 @@
+<%= form_for(@service) do |f| %>
+  <% if @service.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@service.errors.count, "error") %> prohibited this service from being saved:</h2>
+
+      <ul>
+      <% @service.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <center>
+    <table id='service'>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th id='service_variable'>Service variable from servly_services.py</th>
+        <th>*</th>
+      </tr>
+      <tr>
+        <td><%= f.text_field :service_name, :class => 'title' %></td>
+        <td><%= select('service', 'service_type', ['server', 'tcp'], {}, :class => 'title')  %></td>
+        <td><%= f.text_field :service_variable, :class => 'title' %></td>
+        <td><div class="actions">
+            <%= f.submit "#{button_verb} Service", :class => "slick-black" %>
+          </div>
+        </td>
+
+      </tr>
+    </table>
+  </center>
+<% end %>
+<%= button_verb %>

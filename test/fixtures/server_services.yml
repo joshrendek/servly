@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  service_name: MyString
+  domain_id: 1
+  service_variable: MyString
+  service_type: MyString
+
+two:
+  service_name: MyString
+  domain_id: 1
+  service_variable: MyString
+  service_type: MyString

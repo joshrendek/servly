@@ -1,0 +1,58 @@
+install_dir="/home/servly_agent"
+echo "Servly agent will be installed in: "
+echo $install_dir
+
+mkdir -p $install_dir
+
+cd $install_dir
+
+if which sar &> /dev/null;
+then
+  # do nothing
+  echo ""
+else
+  echo "Attempting to install necessary package: sysstat"
+
+  if [ -e /etc/debian_version ]
+  then
+    apt-get install sysstat -y
+  fi
+
+  if [ -e /etc/redhat-release ]
+  then
+    yum install sysstat -y
+  fi
+
+
+fi
+
+
+echo "Downloading servly.py ... "
+curl --silent 'http://<%=account_subdomain%>.servly.com/agent/installer_files?key=<%=@api_key%>&file=agent' > servly.py
+
+echo "Setting permissions on servly.py ..."
+chmod +x servly.py
+
+
+echo "Downloading servly_core.py ... "
+curl --silent 'http://<%=account_subdomain%>.servly.com/agent/installer_files?key=<%=@api_key%>&file=core' > servly_core.py
+
+echo "Downloading servly_services.py ... "
+curl --silent 'http://<%=account_subdomain%>.servly.com/agent/installer_files?key=<%=@api_key%>&file=services' > servly_services.py
+
+
+if [ `cat /etc/crontab | grep -c servly_agent` -lt 1  ]
+then
+  echo "Installing CRON entry ... "
+  echo "*/4 * * * * root $install_dir/servly.py >/dev/null 2>&1" >> /etc/crontab
+else
+  echo "CRON already installed ... "
+fi
+
+echo "Running first time ... "
+./servly.py
+
+
+  
+
+echo "Installation finished."

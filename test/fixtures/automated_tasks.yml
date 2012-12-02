@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  domain_id: 1
+  server_id: 1
+  command: MyString
+  output: MyText
+
+two:
+  domain_id: 1
+  server_id: 1
+  command: MyString
+  output: MyText

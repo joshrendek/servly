@@ -1,0 +1,27 @@
+<%= form_for(@url_monitor) do |f| %>
+  <% if @url_monitor.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@url_monitor.errors.count, "error") %> prohibited this url_monitor from being saved:</h2>
+
+      <ul>
+      <% @url_monitor.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+<center>
+    <table id='service'>
+      <tr>
+        <th><%=t(:url)%></th>
+        <th><%=t(:keyword)%></th>
+        <th></th>
+      </tr>
+      <tr>
+        <td><%= f.text_field :url %></td>
+        <td><%= f.text_field :keyword %></td>
+        <td class="actions"><%= f.submit t(controller.action_name) + " " + t(:url_monitor)%></td>
+      </tr>
+    </table>
+  </center>
+<% end %>

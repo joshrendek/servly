@@ -1,0 +1,116 @@
+<table cellspacing="5" border="0">
+  <tr id="">
+    <td>
+      <ul class="sf-menu">
+        <li>
+          <a href="/" class="navigation_head"><h2><%= t(:dashboard) %></h2></a>
+          <ul>
+            <li><%= link_to t(:home), root_path %></li>
+            <li><%= link_to t(:logout), destroy_user_session_path %></li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+    <td>
+      <ul class="sf-menu">
+        <li>
+          <a href="<%= url_monitors_path %>" class="navigation_head"><h2><%= t(:url_monitoring) %></h2></a>
+          <ul>
+            <li><%= link_to t(:list_monitor), url_monitors_path %></li>
+            <li><%= link_to t(:new_monitor), new_url_monitor_path, :class => "fancybox" %></li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+    <td>
+      <ul class="sf-menu">
+        <li>
+          <a href="<%= servers_path %>" class="navigation_head"><h2><%= t(:server_monitoring) %></h2></a>
+          <ul>
+            <li><%= link_to t(:servers), servers_path %></li>
+            <li><%= link_to t(:groups), groups_path %></li>
+            <li><%= link_to t(:alerts), alerts_path %>
+              <ul class="sf-menu">
+                <li><%= link_to "List Alerts", alerts_path %></li>
+                <li><%= link_to "New Alert", new_alert_path %></li>
+                <li><%= link_to "New Triggered Alerts", triggered_alerts_new_path %></li>
+                <li><%= link_to "All Triggered Alerts", triggered_alerts_index_path %></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+    <td>
+      <ul class="sf-menu">
+        <li>
+          <a href="#" class="navigation_head"><h2><%= t(:tools) %></h2></a>
+          <ul>
+            <li><%= link_to t(:servly_agent), agent_index_path %></li>
+            <li><%= link_to t(:ping_map), pingmap_network_index_path %></li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+    <td>
+      <ul class="sf-menu">
+        <li>
+          <a href="#" class="navigation_head"><h2><%= t(:settings) %></h2></a>
+          <ul>
+            <li><%= link_to t(:users), user_management_index_path %></li>
+            <li><%= link_to t(:services), services_path %></li>
+            <li><%= link_to t(:teams), teams_path %></li>
+            <li><%= link_to "SMS Settings", sms_user_profile_index_path %></li>
+            <li><%= link_to "Profile", user_profile_index_path %>
+                <ul class="sf-menu">
+                  <li><%= link_to "Edit Profile", user_profile_index_path %></li>
+                  <li><%= link_to t(:change_password), edit_user_password_index_path %></li>
+                </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </td>
+    <td>
+      <div id="header_search">
+        <%= form_for(:search) do |f| %>
+            <%= f.text_field :server, :value => t(:search_for_server), :class => 'title', :onclick => "this.value='';" %>
+        <% end %>
+      </div>
+      <% if !current_user.nil? %>
+          <% if triggered_alert_count > 0 %>
+              <div id="header_error"><%= link_to "#{triggered_alert_count} New Alerts", triggered_alerts_new_path %></div>
+
+          <% end %>
+      <% end %>
+
+    </td>
+  </tr>
+</table>
+<div class="clear"></div>
+
+
+<script type="text/javascript">
+    jQuery().ready(function() {
+        function log(event, data, formatted) {
+            //alert("Selected: " + data[1] + "@~@" + formatted);
+            window.location = '/servers/' + data[1];
+        }
+
+        jQuery('#search_server').autocomplete("/servers/quick_search",
+                {
+                    width: 250,
+                    max: 150,
+                    scroll: true,
+                    scrollHeight: 300
+                });
+
+        jQuery("#search_server").result(log).next().click(function() {
+            jQuery(this).prev().search();
+        });
+
+
+    });
+
+</script>
+

@@ -1,0 +1,5 @@
+<%= @status == true ? raw("<div style=' background-color: lime;' width='100%'>") : raw("<div style='background-color: pink;' width='100%'>") %>
+    <%=link_to @server.hostname, server_url(@server.id)%>
+    <% if @status %> <small style='float: right; '> <%=(@elapsed_time*1000).round(2)%>ms </small> <% end %> 
+</div>
+

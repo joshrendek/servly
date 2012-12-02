@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  subdomain: MyString
+  domain: MyString
+  user_id: 1
+  api_key: MyString
+  server_limit: 1
+  alert_limit: 1
+  url_monitor_limit: 1
+  user_limit: 1
+  active: 1
+
+two:
+  subdomain: MyString
+  domain: MyString
+  user_id: 1
+  api_key: MyString
+  server_limit: 1
+  alert_limit: 1
+  url_monitor_limit: 1
+  user_limit: 1
+  active: 1

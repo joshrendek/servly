@@ -1,0 +1,71 @@
+<%= form_for(@alert) do |f| %>
+  <% if @alert.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@alert.errors.count, "error") %> prohibited this alert from being saved:</h2>
+
+      <ul>
+      <% @alert.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+<div align="center">
+<table id="alert_form">
+ <tr>
+   <th>Stat</th>
+   <th>Operator</th>
+   <th>Value</th>
+   <th colspan="2">Active?</th>
+
+ </tr>
+ <tr>
+   <td><%= select('alert', 'threshold_stat', Alert.alertable_stats, {}, :class => 'title') %></td>
+   <td><%= select('alert', 'operator', [['>', 'gt'], ['<', 'lt']], {}, :class => 'title') %></td>
+   <td><%= f.text_field :threshold_value, :class => 'title' %></td>
+   <td colspan="2"><%= select('alert', 'active', [['Yes', 1], ['No', 0]], {}, :class => 'title') %></td>
+ </tr>
+ <tr>
+   <th>Start Time</th>
+   <th>End Time</th>
+   <th>Who to alert</th>
+   <th>Alert Target</th>
+   <th></th>
+ </tr>
+ <tr>
+   <td><%= f.time_select :start_time, {:default => start_time_default}, :class => 'title' %></td>
+   <td><%= f.time_select :end_time, {:default => end_time_default}, :class => 'title' %></td>
+   <td><%= select('alertable', 'alertable', alertables, {}, :class =>'title') %></td>
+   <td><%= select('targetable', 'targetable', targetables, {}, :class =>'title') %></td>
+
+   <td>
+     <div class="actions">
+        <%= f.submit %>
+     </div>
+   </td>
+ </tr>
+</table>
+
+<table class="sms">
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>Disk</td>
+    <td>Measured in bits. 1KB = 1024 Bits; 1MB = 1024KB = 1048576 Bits; 1GB = 1073741824 Bits</td>
+  </tr>
+  <tr>
+    <td>Memory</td>
+    <td>Measured in bits. 1KB = 1024 Bits; 1MB = 1024KB = 1048576 Bits; 1GB = 1073741824 Bits</td>
+  </tr>
+  <tr>
+    <td>Network Usage</td>
+    <td>Measured in bits.</td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+</table>
+</div>
+<% end %>

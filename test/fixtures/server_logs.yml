@@ -1,0 +1,49 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  group_id: 1
+  domain_id: 1
+  hostname: MyString
+  ip: MyString
+  location: MyString
+  cpu_usage: 1.5
+  disk_size: 1
+  disk_used: 1
+  load_one: 1.5
+  load_five: 1.5
+  load_fifteen: 1.5
+  mem_free: 1
+  mem_used: 1
+  swap_free: 1
+  swap_used: 1
+  net_in: 1
+  net_out: 1
+  running_procs: 1
+  number_of_cpus: 1
+  kernel: MyString
+  release: MyString
+  pending_updates: 1
+
+two:
+  group_id: 1
+  domain_id: 1
+  hostname: MyString
+  ip: MyString
+  location: MyString
+  cpu_usage: 1.5
+  disk_size: 1
+  disk_used: 1
+  load_one: 1.5
+  load_five: 1.5
+  load_fifteen: 1.5
+  mem_free: 1
+  mem_used: 1
+  swap_free: 1
+  swap_used: 1
+  net_in: 1
+  net_out: 1
+  running_procs: 1
+  number_of_cpus: 1
+  kernel: MyString
+  release: MyString
+  pending_updates: 1

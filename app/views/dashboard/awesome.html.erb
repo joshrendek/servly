@@ -1,0 +1,7 @@
+<style type="text/css">body { background-color:#000 !important;}</style>
+<% i = 0; @servers.each do |s| %>
+    <div class="awesome_pill">
+      <h5><%=s.hostname%></h5>
+    </div>
+   <% i%12 == 0 ? "<div class='clear'></div>" : '' %>
+<% end %>

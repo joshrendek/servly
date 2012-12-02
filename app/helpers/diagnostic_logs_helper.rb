@@ -1,0 +1,2 @@
+module DiagnosticLogsHelper
+end

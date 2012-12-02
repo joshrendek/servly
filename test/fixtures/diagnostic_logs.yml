@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  diagnostic_worker_id: 1
+  command: MyString
+  output: MyText
+  server_id: 1
+  domain_id: 1
+
+two:
+  diagnostic_worker_id: 1
+  command: MyString
+  output: MyText
+  server_id: 1
+  domain_id: 1

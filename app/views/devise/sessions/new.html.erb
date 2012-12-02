@@ -1,0 +1,34 @@
+
+<div align="center">
+  <% if subdomain.active == 0 %>
+    <div class="error">This account has expired and you will not be able to view server stats or use the control panel until payment has been made.
+      <br />If you feel this has been made in error or if you have any questions, please open a ticket at <a href="https://launch.servly.com/">http://launch.servly.com/</a></div>
+  <% end %>
+  <table id="login">
+  <tr>
+    <th colspan="2">Sign in</th>
+  </tr>
+<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+  <tr>
+    <td><%= f.label :email %></td>
+    <td><%= f.email_field :email, :class => 'title' %></td>
+  </tr>
+  <tr>
+    <td><%= f.label :password %></td>
+    <td><%= f.password_field :password, :class => 'title'  %></td>
+  </tr>
+  <tr>
+    <% if devise_mapping.rememberable? -%>
+      <td colspan="2"><%= f.check_box :remember_me %> <%= f.label :remember_me %></td>
+    <% end -%>
+  </tr>
+  <tr>
+    <td colspan="2" class="actions loginactions"><%= f.submit "Sign in" %></td>
+  </tr>
+<% end %> 
+  <tr>
+      <%= render :partial => "devise/shared/links" %>
+  </tr>
+</table>
+</div>
+

@@ -1,0 +1,39 @@
+<div class="grid_9">
+  <h1>Groups</h1>
+</div>
+
+<div clas="grid_3" id="new_server_button">
+  <%= link_to raw("<button class='slick-black'>New Group</button>"), new_group_path %>
+</div>
+
+
+<div class="clear"></div>
+<% @groups.each do |group| %>
+<table>
+  <tr>
+    <th colspan="8" class="group_titles">
+        <%= link_to group.name, group %>
+    </th>
+
+    <th colspan="4" class="group_edit">
+    <%= link_to 'Edit', edit_group_path(group) %>
+    <%= link_to 'Destroy', group, :confirm => 'Are you sure?', :method => :delete %>
+      </th>
+
+  </tr>
+    <% i = 0; group.servers.each do |s| %>
+        <%= i == 0 ? raw('<tr>') : '' %>
+          <td class="groupservers"><%=link_to s.hostname, group_server_path(group.id, s.id)%></td>
+        <%= i == 11 ? raw('</tr>') : '' %>
+        <% i == 11 ? i = 0 : '' %>
+
+        <% i+=1  %>
+      <% end %>
+  </table>
+
+  <div class="clear"></div>
+  
+<% end %>
+
+<br />
+

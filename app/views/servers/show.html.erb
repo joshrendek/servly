@@ -1,0 +1,372 @@
+<div id="details_wrapper" class="grid_2">
+  <table width="100%" align="center" border="0" cellspacing="0">
+    <tr id="tr">
+      <th colspan="2">CPU Information</th>
+    </tr>
+    <tr class="odd">
+      <td>No. CPUs</td>
+      <td><%= @server.number_of_cpus %></td>
+    </tr>
+    <tr id="<%= Server.cpu_color(@server.cpu_usage) %>">
+      <td>CPU Free</td>
+      <td><%= raw Server.rpercent_display((100.0-@server.cpu_usage).round) rescue nil %></td>
+    </tr>
+    <tr id="<%= Server.cpu_used_color(@server.cpu_usage) %>">
+      <td>CPU Used</td>
+      <td><%= raw Server.percent_display((@server.cpu_usage).round) rescue nil %></td>
+    </tr>
+    <tr id="<%= Server.procs_color(@server.running_procs) %>">
+      <td>Running Processes</td>
+      <td><%= @server.running_procs %></td>
+    </tr>
+    <% if @server.os != "Windows" %>
+        <tr id="<%= Server.load_color(@server.load_one, @server.number_of_cpus) %>">
+          <td>Load Average (1m)</td>
+          <td><%= @server.load_one %></td>
+        </tr>
+        <tr id="<%= Server.load_color(@server.load_five, @server.number_of_cpus) %>">
+          <td>Load Average (5m)</td>
+          <td><%= @server.load_five %></td>
+        </tr>
+        <tr id="<%= Server.load_color(@server.load_fifteen, @server.number_of_cpus) %>">
+          <td>Load Average (15m)</td>
+          <td><%= @server.load_fifteen %></td>
+        </tr>
+    <% end %>
+
+    <tr id="tr">
+      <th colspan="2">Network Usage</th>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Connections</td>
+      <td><%= @server.connections %></td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Net In</td>
+      <td><%= number_to_human_size(@server.net_in*8).gsub("Bytes", "B") rescue nil %>it/s</td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Net Out</td>
+      <td><%= number_to_human_size(@server.net_out*8).gsub("Bytes", "B") rescue nil %>it/s</td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Net Total</td>
+      <td><%= number_to_human_size((@server.net_out+@server.net_in)*8).gsub("Bytes", "B") rescue nil %>it/s</td>
+    </tr>
+
+  </table>
+
+  <table width="100%" align="center" border="0" cellspacing="0">
+    <tr id="tr">
+      <th colspan="2">Memory</th>
+    </tr>
+    <tr id="<%= Server.mem_color(@server.mem_free, @server.mem_used, "free") %>">
+      <td>Free Memory</td>
+      <td><%= number_to_human_size(@server.mem_free) %></td>
+    </tr>
+    <tr id="<%= Server.mem_color(@server.mem_free, @server.mem_used, "used") %>">
+      <td>Used Memory</td>
+      <td><%= number_to_human_size(@server.mem_used) %></td>
+    </tr>
+
+
+    <tr id="tr">
+      <th colspan="2">Disk</th>
+    </tr>
+    <tr id="<%= Server.disk_color(@server.disk_size, @server.disk_used, "free") %>">
+      <td>Free Diskspace</td>
+      <td><%= number_to_human_size(@server.disk_size - @server.disk_used) rescue nil %></td>
+    </tr>
+    <tr id="<%= Server.disk_color(@server.disk_size, @server.disk_used, "used") %>">
+      <td>Used Diskspace</td>
+      <td><%= number_to_human_size(@server.disk_used) %></td>
+    </tr>
+    <tr class="even">
+      <td>Total Diskspace</td>
+      <td><%= number_to_human_size(@server.disk_size) %></td>
+    </tr>
+    <tr>
+      <td>Block Read/s</td>
+      <td><%= @server.blk_reads %></td>
+    </tr>
+    <tr>
+      <td>Block Write/s</td>
+      <td><%= @server.blk_writes %></td>
+    </tr>
+
+  </table>
+
+
+</div>
+<div id="details_wrapper" class="grid_6">
+  <table width="100%" align="center">
+    <tr>
+      <th>Service</th>
+      <th>Status</th>
+      <th></th>
+      <th>Service</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+
+    <% i = 0; @server.server_services.each do |s| %>
+        <%= i%2 == 0 ? raw('<tr>') : '' %>
+        <td class="ss<%= s.id %>"><%= s.service.service_name %></td>
+        <td class="ss<%= s.id %>"><%= s.status == 0 ? raw('<span id="red">Offline</span>') : raw('<span id="green">Online</a>') %></td>
+        <td class="ss<%= s.id %>"><%= link_to raw("<img src='/images/heart_delete.png' />"), "javascript:delete_server_service(#{@server.id}, #{s.id})" %></td>
+        <%= i%2 == 1 ? raw('</tr>') : '' %>
+        <% i+=1 %>
+    <% end %>
+
+    <tr>
+      <td colspan='6' id='add_server_services'>
+        <% form_for [@server, ServerService.new] do |f| %>
+            <%= select('server_service', 'service_id', subdomain.services.collect { |c| [c.service_name, c.id] }) %>
+            <%= image_submit_tag '/images/heart_add.png' %>
+        <% end %>
+      </td>
+    </tr>
+
+  </table>
+
+  <table width="100%" align="center" border="0" cellspacing="0">
+    <tr id="tr">
+      <th colspan="2">Server Information</th>
+    </tr>
+    <tr>
+      <td><%= t(:network_uptime) %></td>
+      <td><%= @server.server_uptime.round(4) %>%</td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Hostname</td>
+      <td><%= @server.hostname %></td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Uptime</td>
+      <td><%= @server.uptime %></td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>IP</td>
+      <td><%= @server.ip %></td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Pending Updates</td>
+      <td><%= @server.try(:pending_updates) %></td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Kernel</td>
+      <td><%= @server.kernel %></td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Release Information</td>
+      <td><%= @server.release %></td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Location</td>
+      <td><%= @server.location %></td>
+    </tr>
+    <tr class="<%= cycle('odd', 'even') %>">
+      <td>Last Update</td>
+      <td><%= time_ago_in_words(@server.updated_at) %> ago</td>
+    </tr>
+  </table>
+
+  <table width="100%">
+    <tr>
+      <% if @server.os != 'Windows' %>
+          <th>User</th>
+      <% end %>
+      <th>PID</th>
+      <th><%= @server.os == 'Windows' ? 'Process' : 'PPID' %></th>
+      <th><%= @server.os == 'Windows' ? 'Working Memory' : 'RSS' %></th>
+      <th><%= @server.os == 'Windows' ? 'Private Memory' : 'VSZ' %></th>
+      <th>%CPU</th>
+      <% if @server.os != 'Windows' %>
+          <th>%MEM</th>
+          <th>COMMAND</th>
+      <% end %>
+    </tr>
+    <%
+       @ps = @server.ps.split(/(\n)+/) rescue nil
+       @ps.delete_at(0) if !@ps.nil?
+
+       #handle nil case
+       @ps.nil? ? @ps = [] : @ps
+    %>
+    <% for ps in @ps.reverse
+           temp = ps.split(/(\w+)+/)
+           if @server.os == 'Windows'
+               temp = ps.split("||")
+           end
+           if !temp[1].nil? %>
+            <% if @server.os == 'Windows' %>
+                <tr class="<%= cycle('odd', 'even') %>">
+                  <td><%= temp[0] %></td>
+                  <td><%= temp[1] %></td>
+                  <td><%= number_to_human_size(temp[2].to_f) %></td>
+                  <td><%= number_to_human_size(temp[3].to_f) %></td>
+                  <td><%= temp[4] %></td>
+                </tr>
+            <% else %>
+                <tr class="<%= cycle('odd', 'even') %>">
+                  <td><%= temp[1] %></td>
+                  <td><%= temp[3] %></td>
+                  <td><%= temp[5] %></td>
+                  <td><%= number_to_human_size(temp[7].to_f*1024) %></td>
+                  <td><%= number_to_human_size(temp[9].to_f*1024) %></td>
+                  <td><%= temp[11] %></td>
+                  <td><%= temp[15] %></td>
+                  <td>
+                    <div style="width: 250px; overflow: hidden;"><%= begin
+                                                                         ; temp[18..-1].join('');
+                                                                     rescue;
+                                                                     end; %></div>
+                  </td>
+                </tr>
+            <% end %>
+        <%
+           end
+           end %>
+  </table>
+
+
+</div>
+
+
+<div id="graph_wrapper" class="grid_4">
+  <h4>CPU Usage (12 hour)</h4>
+
+  <div id="cpu_usage" style="width:100%;height:120px;"></div>
+
+  <script id="source" language="javascript" type="text/javascript">
+      jQuery(function () {
+          var d1 = <%=@server.generic_graph("cpu_usage", 12)%>;
+          jQuery.plot(jQuery("#cpu_usage"), [
+              {data: d1, label: 'CPU Usage'}
+          ],
+                  { xaxis: { mode: "time"},
+                      yaxis: {max: 100},
+                      legend: {show: true, width: 1, position: 'nw'}});
+      });
+  </script>
+
+  <h4>Running Processes (12 hour)</h4>
+
+  <div id="running_procs" style="width:100%;height:120px;"></div>
+
+  <script id="source" language="javascript" type="text/javascript">
+      jQuery(function () {
+          var d1 = <%=@server.generic_graph("running_procs", 12)%>;
+          jQuery.plot(jQuery("#running_procs"), [
+              {data: d1, label: 'Processes'}
+          ],
+                  { xaxis: { mode: "time"},
+                      legend: {show: true, width: 1, position: 'nw'}});
+      });
+  </script>
+
+  <h4>Network Usage (12 hour)</h4>
+
+  <div id="network" style="width:100%;height:120px;"></div>
+
+  <script id="source" language="javascript" type="text/javascript">
+      jQuery(function () {
+          var d1 = <%=@server.server_graph_net_in(12)%>;
+          var d2 = <%=@server.server_graph_net_out(12)%>;
+          jQuery.plot(jQuery("#network"), [
+              {data: d1, label: 'In (Mb/s)'},
+              {data: d2, label: 'Out (Mb/s)'}
+          ],
+                  { xaxis: { mode: "time"},
+                      legend: {show: true, width: 1, position: 'nw'}});
+      });
+  </script>
+  <% if @server.os != 'Windows' %>
+      <h4>IO Usage (12 hour)</h4>
+
+      <div id="iousage" style="width:100%;height:120px;"></div>
+      <script id="source" language="javascript" type="text/javascript">
+          jQuery(function () {
+              var d1 = <%=@server.server_graph_blk_writes(12)%>;
+              var d2 = <%=@server.server_graph_blk_reads(12)%>;
+              jQuery.plot(jQuery("#iousage"), [
+                  {data: d1, label: 'Write Op/s'},
+                  {data: d2, label: 'Read Op/s'}
+              ],
+                      { xaxis: { mode: "time"},
+                          legend: {show: true, width: 1, position: 'nw'}});
+          });
+      </script>
+  <% end %>
+  <h4>Memory Usage (12 hour)</h4>
+
+  <div id="memory" style="width:100%;height:120px;"></div>
+  <script id="source" language="javascript" type="text/javascript">
+      jQuery(function () {
+          var d1 = <%=@server.server_graph_mem_used(12)%>;
+          var d2 = <%=@server.server_graph_mem_total(12)%>;
+          jQuery.plot(jQuery("#memory"), [
+              {data: d1, label: 'Used (MB)'},
+              {data: d2, label: 'Total (MB)'}
+          ],
+                  { xaxis: { mode: "time"},
+                      legend: {show: true, width: 1, position: 'nw'}});
+      });
+  </script>
+  <% if @server.os != 'Windows' %>
+      <h4>Server Load (12 hour)</h4>
+
+      <div id="load" style="width:100%;height:120px;"></div>
+      <script id="source" language="javascript" type="text/javascript">
+          jQuery(function () {
+              var d1 = <%=@server.server_graph_load_one(12)%>;
+              var d2 = <%=@server.server_graph_load_five(12)%>;
+              var d3 = <%=@server.server_graph_load_fifteen(12)%>;
+              jQuery.plot(jQuery("#load"), [
+                  {data: d1, label: '1m'},
+                  {data: d2, label: '5m'},
+                  {data: d3, label: '15m'}
+              ],
+                      { xaxis: { mode: "time"},
+                          legend: {show: true, width: 1, position: 'nw'}});
+          });
+      </script>
+  <% end %>
+  <h4>Network Connections (12 hour)</h4>
+
+  <div id="connections" style="width:100%;height:120px;"></div>
+  <script id="source" language="javascript" type="text/javascript">
+      jQuery(function () {
+          var d1 = <%=@server.server_graph_connections(12)%>;
+          jQuery.plot(jQuery("#connections"), [
+              {data: d1, label: 'Connections'}
+          ],
+                  { xaxis: { mode: "time"},
+                      legend: {show: true, width: 1, position: 'nw'}});
+      });
+  </script>
+
+
+  <h4>Disk Usage (12 hour)</h4>
+
+  <div id="disk" style="width:100%;height:120px;"></div>
+  <script id="source" language="javascript" type="text/javascript">
+      jQuery(function () {
+          var d1 = <%=@server.server_graph_disk_size(12)%>;
+          var d2 = <%=@server.server_graph_disk_used(12)%>;
+          jQuery.plot(jQuery("#disk"), [
+              {data: d1, label: 'Total (GB)'},
+              {data: d2, label: 'Used (GB)'}
+          ],
+                  { xaxis: { mode: "time"},
+                      legend: {show: true, width: 1, position: 'nw'}});
+      });
+  </script>
+
+
+</div>
+<div class="clear"></div>
+<div id="details_wrapper" class="grid_4">
+</div>
+
+<div class="clear"></div>

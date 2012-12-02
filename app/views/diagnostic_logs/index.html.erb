@@ -1,0 +1,44 @@
+<h1>Diagnostic Logs</h1>
+<% if @group.nil? %>
+    <%= link_to 'Ping', run_server_diagnostic_logs_path(@server, 'ping') %>
+    <%= link_to 'Traceroute', run_server_diagnostic_logs_path(@server, 'traceroute') %>
+    <%= link_to 'MTR', run_server_diagnostic_logs_path(@server, 'mtr') %>
+<% else %>
+    <%= link_to 'Ping', run_group_server_diagnostic_logs_path(@group, @server, 'ping') %>
+    <%= link_to 'Traceroute', run_group_server_diagnostic_logs_path(@group, @server, 'traceroute') %>
+    <%= link_to 'MTR', run_group_server_diagnostic_logs_path(@group, @server, 'mtr') %>
+<% end %>
+<div align="center">
+  <table width="80%">
+    <tr>
+      <th>Ran From</th>
+      <th>Command</th>
+      <th>Status</th>
+      <th>Ran at</th>
+    </tr>
+    <% @diaglog.each do |d| %>
+        <script type="text/javascript">
+            jQuery(function() {
+                jQuery('#dl<%=d.id%>').fancybox();
+            });
+        </script>
+        <tr>
+          <td><%= d.diagnostic_worker.description %> ( <%= d.diagnostic_worker.ip %> )</td>
+          <td><%= d.tag %></td>
+          <td>
+            <% if  !d.output.nil? && d.output.size != 0 %>
+                <% if @group.nil? %>
+                    <%= link_to('View Output', server_diagnostic_log_path(@server, d.id), :id => "dl#{d.id}") %>
+                <% else %>
+                    <%= link_to('View Output', group_server_diagnostic_log_path(@group, @server, d.id), :id => "dl#{d.id}") %>
+                <% end %>
+            <% else %>
+                Running
+            <% end %></td>
+          <td><%= d.updated_at %></td>
+        </tr>
+    <% end %>
+  </table>
+  <%= paginate @diaglog %>
+
+</div>

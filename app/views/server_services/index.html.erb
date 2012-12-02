@@ -1,0 +1,29 @@
+<h1>Listing server_services</h1>
+
+<table>
+  <tr>
+    <th>Service name</th>
+    <th>Domain</th>
+    <th>Service variable</th>
+    <th>Service type</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @server_services.each do |server_service| %>
+  <tr>
+    <td><%= server_service.service_name %></td>
+    <td><%= server_service.domain_id %></td>
+    <td><%= server_service.service_variable %></td>
+    <td><%= server_service.service_type %></td>
+    <td><%= link_to 'Show', server_service %></td>
+    <td><%= link_to 'Edit', edit_server_service_path(server_service) %></td>
+    <td><%= link_to 'Destroy', server_service, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Server service', new_server_service_path %>

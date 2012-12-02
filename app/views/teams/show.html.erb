@@ -1,0 +1,25 @@
+<h1>
+  Team <%= @team.name %>
+  <%= form_for :team_users, :url => {:action => 'add_team_user'} do |f| %>
+      <%= select('team_users', 'user_id', subdomain.users.collect { |u| [u.email, u.id] }) %>
+      <%= f.submit "Add User" %>
+  <% end %>
+</h1>
+
+
+
+
+
+<div class="clear"></div>
+<% i = 0; @team.users.each do |u| %>
+    <div class="grid_2" id="teamusers"><%= u.email %> <%= link_to '[x]', remove_team_user_team_path(@team.id, :team_user => @team.team_users.where(:user_id => u.id).first, :team_id => @team.id), :method => :delete %>  </div>
+    <% if i == 12 %>
+
+        <%= raw('<div class="clear"></div>') %>
+    <% i = 0;
+       end
+    %>
+    <% i+=1 %>
+<% end %>
+
+

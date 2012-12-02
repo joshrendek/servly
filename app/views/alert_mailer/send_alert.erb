@@ -1,0 +1,230 @@
+<link href="http://api.servly.com/stylesheets/forms.css?1304688641" media="screen" rel="stylesheet" type="text/css"/>
+<link href="http://api.servly.com/stylesheets/grid.css?1304688641" media="screen" rel="stylesheet" type="text/css"/>
+<link href="http://api.servly.com/stylesheets/ie.css?1304688641" media="screen" rel="stylesheet" type="text/css"/>
+<link href="http://api.servly.com/stylesheets/scaffold.css?1304688641" media="screen" rel="stylesheet" type="text/css"/>
+<link href="http://api.servly.com/stylesheets/servly.css?1304688641" media="screen" rel="stylesheet" type="text/css"/>
+<table width="100%">
+  <tr>
+    <td>
+      <table width="100%" align="center" border="0" cellspacing="0">
+        <tr id="tr">
+          <th colspan="2">CPU Information</th>
+        </tr>
+        <tr id="data" class="odd">
+          <td>No. CPUs</td>
+          <td><%= @server.number_of_cpus %></td>
+        </tr>
+        <tr id="<%= Server.cpu_color(@server.cpu_usage) %>">
+          <td>CPU Free</td>
+          <td><%= raw Server.rpercent_display((100.0-@server.cpu_usage).round) rescue nil %></td>
+        </tr>
+        <tr id="<%= Server.cpu_used_color(@server.cpu_usage) %>">
+          <td>CPU Used</td>
+          <td><%= raw Server.percent_display((@server.cpu_usage).round) rescue nil %></td>
+        </tr>
+        <tr id="<%= Server.procs_color(@server.running_procs) %>">
+          <td>Running Processes</td>
+          <td><%= @server.running_procs %></td>
+        </tr>
+        <% if @server.os != "Windows" %>
+            <tr id="<%= Server.load_color(@server.load_one, @server.number_of_cpus) %>">
+              <td>Load Average (1m)</td>
+              <td><%= @server.load_one %></td>
+            </tr>
+            <tr id="<%= Server.load_color(@server.load_five, @server.number_of_cpus) %>">
+              <td>Load Average (5m)</td>
+              <td><%= @server.load_five %></td>
+            </tr>
+            <tr id="<%= Server.load_color(@server.load_fifteen, @server.number_of_cpus) %>">
+              <td>Load Average (15m)</td>
+              <td><%= @server.load_fifteen %></td>
+            </tr>
+        <% end %>
+
+      </table>
+    </td>
+    <td>
+      <table width="100%" align="center" border="0" cellspacing="0">
+        <tr id="tr">
+          <th colspan="2">Memory</th>
+        </tr>
+        <tr id="<%= Server.mem_color(@server.mem_free, @server.mem_used, "free") %>">
+          <td>Free Memory</td>
+          <td><%= number_to_human_size(@server.mem_free) %></td>
+        </tr>
+        <tr id="<%= Server.mem_color(@server.mem_free, @server.mem_used, "used") %>">
+          <td>Used Memory</td>
+          <td><%= number_to_human_size(@server.mem_used) %></td>
+        </tr>
+
+
+        <tr id="tr">
+          <th colspan="2">Disk</th>
+        </tr>
+        <tr id="<%= Server.disk_color(@server.disk_size, @server.disk_used, "free") %>">
+          <td>Free Diskspace</td>
+          <td><%= number_to_human_size(@server.disk_size - @server.disk_used) rescue nil %></td>
+        </tr>
+        <tr id="<%= Server.disk_color(@server.disk_size, @server.disk_used, "used") %>">
+          <td>Used Diskspace</td>
+          <td><%= number_to_human_size(@server.disk_used) %></td>
+        </tr>
+        <tr id="data" class="even">
+          <td>Total Diskspace</td>
+          <td><%= number_to_human_size(@server.disk_size) %></td>
+        </tr>
+
+
+      </table>
+
+    </td>
+
+    <td>
+      <table width="100%" align="center">
+        <tr>
+          <th>Service</th>
+          <th>Status</th>
+          <th></th>
+          <th>Service</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+
+        <% i = 0; @server.server_services.each do |s| %>
+            <%= i%2 == 0 ? raw('<tr>') : '' %>
+            <td class="ss<%= s.id %>"><%= s.service.service_name %></td>
+            <td class="ss<%= s.id %>"><%= s.status == 0 ? raw('<span id="red">Offline</span>') : raw('<span id="green">Online</a>') %></td>
+            <td class="ss<%= s.id %>"></td>
+            <%= i%2 == 1 ? raw('</tr>') : '' %>
+            <% i+=1 %>
+        <% end %>
+
+        <tr>
+          <td colspan='6' id='add_server_services'>
+
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+
+      <table width="100%" align="center" border="0" cellspacing="0">
+        <tr id="tr">
+          <th colspan="2">Server Information</th>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Hostname</td>
+          <td><%= @server.hostname %></td>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Uptime (1 month)</td>
+          <td></td>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>IP</td>
+          <td><%= @server.ip %></td>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Pending Updates</td>
+          <td><%= @server.try(:pending_updates) %></td>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Kernel</td>
+          <td><%= @server.kernel %></td>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Release Information</td>
+          <td><%= @server.release %></td>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Location</td>
+          <td><%= @server.location %></td>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Last Update</td>
+          <td><%= time_ago_in_words(@server.updated_at) %> ago</td>
+        </tr>
+      </table>
+    </td>
+    <td>
+      <table width="100%" align="center">
+        <tr id="tr">
+          <th colspan="2">Network Usage</th>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Connections</td>
+          <td><%= @server.connections %></td>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Net In</td>
+          <td><%= number_to_human_size(@server.net_in*8).gsub("Bytes", "B") rescue nil %>it/s</td>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Net Out</td>
+          <td><%= number_to_human_size(@server.net_out*8).gsub("Bytes", "B") rescue nil %>it/s</td>
+        </tr>
+        <tr id="data" class="<%= cycle('odd', 'even') %>">
+          <td>Net Total</td>
+          <td><%= number_to_human_size((@server.net_out+@server.net_in)*8).gsub("Bytes", "B") rescue nil %>it/s</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+
+
+<table width="100%">
+  <tr>
+    <th>User</th>
+    <th>PID</th>
+    <th>PPID</th>
+    <th>RSS</th>
+    <th>VSZ</th>
+    <th>%CPU</th>
+    <th>%MEM</th>
+    <th>COMMAND</th>
+  </tr>
+  <%
+     @ps = @server.ps.split(/(\n)+/) rescue nil
+     @ps.delete_at(0) if !@ps.nil?
+
+     #handle nil case
+     @ps.nil? ? @ps = [] : @ps
+  %>
+  <% for ps in @ps.reverse
+         temp = ps.split(/(\w+)+/)
+         if !temp[1].nil? %>
+          <tr id="data" class="<%= cycle('odd', 'even') %>">
+            <td><%= temp[1] %></td>
+            <td><%= temp[3] %></td>
+            <td><%= temp[5] %></td>
+            <td><%= number_to_human_size(temp[7].to_f*1024) %></td>
+            <td><%= number_to_human_size(temp[9].to_f*1024) %></td>
+            <td><%= temp[11] %></td>
+            <td><%= temp[15] %></td>
+            <td>
+              <div style="width: 250px; overflow: hidden;"><%= begin
+                                                                   ; temp[18..-1].join('');
+                                                               rescue;
+                                                               end; %></div>
+            </td>
+          </tr>
+      <%
+         end
+         end %>
+</table>
+
+
+</div>
+
+
+
+<div class="clear"></div>
+<div id="details_wrapper" class="grid_4">
+</div>
+
+<div class="clear"></div>

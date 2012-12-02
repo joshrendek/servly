@@ -1,0 +1,268 @@
+<div class="container-fluid">
+  <div class="row-fluid">
+
+    <div class="span4">
+      <table width="100%" align="center" border="0" cellspacing="0">
+        <tr id="tr">
+          <th colspan="2"><%= t(:health_overview) %></th>
+        </tr>
+        <tr id="healthy" class="healthy">
+          <td><%= t(:healthy_servers) %></td>
+          <td><%= link_to @healthy, healthy_servers_path %></td>
+        </tr>
+        <tr id="dead" class="<%= @dead > 0 ? 'dead' : '' %>">
+          <td><%= t(:dead_servers) %></td>
+          <td><%= link_to @dead, dead_servers_path %></td>
+        </tr>
+      </table>
+      <br/>
+      <table width="100%" align="center" border="0" cellspacing="0">
+        <tr id="tr">
+          <th colspan="2"><%= t(:operating_system_overview) %></th>
+        </tr>
+        <% for o in @os %>
+          <tr>
+            <td>
+              <img width="15" height="15" style="float: left;" src="/images/os/<%= Server.os_type(o[0]) %>"/> <%= o[0] %>
+          </td>
+          <td><%= o[1] %></td>
+        </tr>
+      <% end %>
+    </table>
+    <br/>
+    <table width="100%" align="center" border="0" cellspacing="0">
+      <tr id="tr">
+        <th colspan="4"><%= t(:service_overview) %></th>
+      </tr>
+      <% i = 0; @services.each do |s| %>
+        <%= i%2 == 0 ? raw('<tr>') : '' %>
+          <td><%= link_to s.service_name, service_servers_path(s) %></td>
+          <td><%= s.server_services.where("status = ?", 1).count %> / <%= s.server_services.count %></td>
+
+          <%= i%2 == 1 ? raw('</tr>') : '' %>
+        <% i+=1; end %>
+      </table>
+    </div>
+
+    <div class="span4">
+      <table width="100%" align="center" border="0" cellspacing="0">
+        <tr id="tr">
+          <th colspan="2"><%= t(:collective_overview) %></th>
+        </tr>
+        <tr>
+          <td><%= t(:network_uptime) %></td>
+          <td><%= link_to subdomain.uptime.round(4), uptime_network_index_path %>%</td>
+        </tr>
+        <tr>
+          <td><%= t(:number_cpus) %></td>
+          <td><%= @no_cpus %></td>
+        </tr>
+        <tr>
+          <td><%= t(:processor_usage) %></td>
+          <td><%= @cpu_usage.to_i rescue nil %>
+          <div class="percent_bar">
+
+
+            <div style="width: <%=(@cpu_usage.to_i).round(0).to_i%>%;">
+            </div>
+            <span><%= @cpu_usage.to_i %> %</span>
+
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><%= t(:pending_updates) %></td>
+        <td><%= @pending_updates %></td>
+      </tr>
+      <tr>
+        <td><%= t(:memory) %></td>
+        <td>
+          <div class="percent_bar">
+
+
+            <div style="width: <%=((@used_mem.to_f/@total_mem.to_f)*100).round(0).to_i%>%;">
+            </div>
+            <span><%= number_to_human_size(@used_mem).gsub('GB', '') %> / <%= number_to_human_size(@total_mem) %></span>
+
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><%= t(:diskspace) %></td>
+        <td>
+          <div class="percent_bar">
+
+
+            <div style="width: <%=((@used_disk.to_f/@total_disk.to_f)*100).round(0).to_i%>%;">
+            </div>
+            <span><%= number_to_human_size(@used_disk) %> / <%= number_to_human_size(@total_disk) %></span>
+
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td><%= t(:net_connections) %></td>
+        <td><%= @total_connections %></td>
+      </tr>
+      <tr>
+        <td><%= t(:net_in) %></td>
+        <td><%= number_to_human_size(@net_in*8).gsub("Bytes", "B") %>it/s</td>
+      </tr>
+      <tr>
+        <td><%= t(:net_out) %></td>
+        <td><%= number_to_human_size(@net_out*8).gsub("Bytes", "B") %>it/s</td>
+      </tr>
+      <tr>
+        <td><%= t(:net_total) %></td>
+        <td><%= number_to_human_size(@net_total*8).gsub("Bytes", "B") %>it/s</td>
+      </tr>
+    </table>
+
+  </div>
+
+  <div class="span4">
+    <h4><%= t(:cpu_usage) %> (24 hour)</h4>
+
+    <div id="cpu" style="width:100%;height:120px;"></div>
+
+    <script id="source" language="javascript" type="text/javascript">
+      jQuery(function () {
+          var d1 = <%=CollectiveStat.cpu_usage(24, subdomain_id)%>;
+          jQuery.plot(jQuery("#cpu"), [
+            {data: d1, label: '<%=t(:cpu_usage)%>'}
+            ],
+            { xaxis: { mode: "time"},
+series: {
+lines: {
+lineWidth: 1
+}},
+legend: {show: true, width: 1, position: 'nw'}});
+          });
+</script>
+
+<h4><%= t(:network_usage) %> (24 hour)</h4>
+
+<div id="network" style="width:100%;height:120px;"></div>
+
+<script id="source" language="javascript" type="text/javascript">
+  jQuery(function () {
+      var d1 = <%=CollectiveStat.net_in(24, subdomain_id)%>;
+      var d2 = <%=CollectiveStat.net_out(24, subdomain_id)%>;
+      var d3 = <%=CollectiveStat.net_total(24, subdomain_id)%>;
+
+      jQuery.plot(jQuery("#network"), [
+        {data: d1, label: '<%=t(:in)%> (Mb/s)'},
+        {data: d2, label: '<%=t(:out)%> (Mb/s)'},
+        {data: d3, label: '<%=t(:total)%> (Mb/s)'}
+        ],
+        { xaxis: { mode: "time"}, series: {
+lines: {
+lineWidth: 1
+}},
+legend: {show: true, width: 1, position: 'nw'}});
+      });
+</script>
+
+<h4><%= t(:network_connections) %> (24 hour)</h4>
+
+<div id="netconn" style="width:100%;height:120px;"></div>
+<script id="source" language="javascript" type="text/javascript">
+  jQuery(function () {
+      var d1 = <%=CollectiveStat.connections(24, subdomain_id)%>;
+      jQuery.plot(jQuery("#netconn"), [
+        {data: d1}
+        ],
+        { xaxis: { mode: "time"},
+series: {
+lines: {
+lineWidth: 1
+}},
+legend: {show: true, width: 1, position: 'nw'}});
+      });
+</script>
+              </div>
+
+            <div class="row">
+              <div class="span3">
+                <table width="100%" align="center" border="0" cellspacing="0">
+                  <tr id="tr">
+                    <th colspan="2"><%= t(:top_10_cpu) %></th>
+                  </tr>
+                  <% for s in @topten_cpu %>
+                    <tr>
+                      <td><%= link_to s.hostname, server_url(s.id) %></td>
+                      <td><%= raw Server.percent_display((s.cpu_usage).round) rescue nil %></td>
+                    </tr>
+                  <% end %>
+                </table>
+              </div>
+
+              <div class="span3">
+                <table width="100%" align="center" border="0" cellspacing="0">
+                  <tr id="tr">
+                    <th colspan="2"><%= t(:top_10_memory) %></th>
+                  </tr>
+                  <% for s in @topten_memory %>
+                    <%
+                      t1 = number_to_human_size(s[1])
+                      t2 = number_to_human_size(s[2])
+                      tt1 = t1.split(' ')
+                      tt2 = t2.split(' ')
+                      if tt1[1] == tt2[1]
+                        tmp = tt1[0] + "/" + tt2[0] + " " + tt2[1]
+                      else
+                        tmp = t1 + "/" + t2
+                      end
+
+                    %>
+                  <tr>
+                    <td><%= link_to Server.find(s[3]).hostname, server_url(s[3]) %></td>
+                    <td style="text-align: right"><%= raw Server.colorize(tmp, (100*(s[0]))) %></td>
+                  </tr>
+                <% end %>
+              </table>
+            </div>
+
+            <div class="span3">
+              <table width="100%" align="center" border="0" cellspacing="0">
+                <tr id="tr">
+                  <th colspan="2"><%= t(:top_10_network) %></th>
+                </tr>
+                <% for s in @topten_net %>
+                  <tr>
+                    <td><%= link_to Server.find(s[1]).hostname, server_url(s[1]) %></td>
+                    <td><%= number_to_human_size(s[0]*8).gsub("Bytes", "B") %>it/s</td>
+                  </tr>
+                <% end %>
+              </table>
+            </div>
+
+            <div class="span3">
+              <table width="100%" align="center" border="0" cellspacing="0">
+                <tr id="tr">
+                  <th colspan="2"><%= t(:top_10_disk) %></th>
+                </tr>
+                <% for s in @topten_disk %>
+                  <%
+                    t1 = number_to_human_size(s[1])
+                    t2 = number_to_human_size(s[2])
+                    tt1 = t1.split(' ')
+                    tt2 = t2.split(' ')
+                    if tt1[1] == tt2[1]
+                      tmp = tt1[0] + "/" + tt2[0] + " " + tt2[1]
+                    else
+                      tmp = t1 + "/" + t2
+                    end
+
+                  %>
+
+                <tr>
+                  <td><%= link_to Server.find(s[3]).hostname, server_url(s[3]) %></td>
+                  <td style="text-align: right"><%= raw Server.colorize(tmp, (100*(s[0]))) %></td>
+                </tr>
+              <% end %>
+            </table>
+          </table>
+        </div>
+      </div>
+    </div>

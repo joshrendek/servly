@@ -1,0 +1,29 @@
+<div class="grid_9">
+  <h1>Users</h1>
+</div>
+<div class="clear"></div>
+<div align="center">
+  To add a user, simply give them this <%= link_to "link", new_user_registration_path %> to register, and then you can approve them.
+<table id="user_table">
+  <tr>
+    <th></th>
+    <th>Email</th>
+    <th>Active?</th>
+    <th>Receiving Alerts</th>
+    <th>Active?</th>
+    <th>Permissions</th>
+    <th></th>
+  </tr>
+  <% @users.each do |user| %>
+  <tr>
+    <td><img src="http://www.gravatar.com/avatar/<%=gravatar_url(user.email)%>?s=32" style="float: left;"/></td>
+    <td><%=user.email%></td>
+    <td><%= user.active_for?(subdomain) == 1 ? 'Yes' : 'No' %></td>
+    <td><%= link_to (user.alerts_for?(subdomain) ? 'Yes' : 'No'), toggle_alerts_user_management_path(user.relative_domain_user(subdomain))%></td>
+    <td><%= link_to (user.active_for?(subdomain) == 1 ? 'Deactivate' : 'Activate'), toggle_activation_user_management_path(user.relative_domain_user(subdomain))%></td>
+    <td><%= link_to 'Manage', permissions_path(user.relative_domain_user(subdomain)), :id => "manage_#{user.id}" %></td>
+    <td><%= link_to 'Remove', user_management_path(user.relative_domain_user(subdomain)), :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+  <% end %>
+</table>
+</div>

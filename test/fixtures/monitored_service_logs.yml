@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  domain_id: 1
+  server_id: 1
+  service_id: 1
+  service_status: 1
+  service_value: MyString
+
+two:
+  domain_id: 1
+  server_id: 1
+  service_id: 1
+  service_status: 1
+  service_value: MyString

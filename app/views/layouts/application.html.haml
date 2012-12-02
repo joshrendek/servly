@@ -1,0 +1,43 @@
+!!!
+%html
+  %head
+    %title Servly
+    = stylesheet_link_tag "bootstrap.min"
+    = csrf_meta_tag
+    = javascript_include_tag 'jquery-1.8.0.min'
+    = javascript_include_tag "http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"
+
+    :javascript
+      var $j = jQuery.noConflict();
+
+  %body 
+    .navbar.navbar-inverse.navbar-fixed-top
+      .navbar-inner
+        .container
+          .nav-collapse.subnav-collapse
+            %ul.nav
+              %li= link_to t(:home), root_path
+              %li.dropdown 
+                = link_to raw( t(:server_monitoring) + "<b class='caret'></b>"), "#", 
+                    :class => "dropdown-toggle", "data-toggle" => "dropdown"
+                %ul.dropdown-menu 
+                  %li= link_to t(:servers), servers_path 
+                  %li= link_to t(:groups), groups_path
+              %li.dropdown
+                = link_to raw( "Alerts" + "<b class='caret'></b>"), "#", 
+                    :class => "dropdown-toggle", "data-toggle" => "dropdown"
+                %ul.dropdown-menu
+                  %li= link_to "List Alerts", alerts_path
+                  %li= link_to "New Alert", new_alert_path
+                  %li= link_to "New Triggered Alert", triggered_alerts_new_path
+                  %li= link_to "All Triggered Alert", triggered_alerts_index_path
+
+              %li= link_to t(:url_monitoring), url_monitors_path
+              %li= link_to t(:tools), "#"
+              %li= link_to t(:settings), "#"
+
+
+
+    .container-fluid
+      .row-fluid
+        = yield 

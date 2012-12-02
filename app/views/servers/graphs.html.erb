@@ -1,0 +1,271 @@
+<%
+   if params[:hours].nil?
+       hours = 12
+   else
+       hours = params[:hours].to_i
+   end
+%>
+<div class="container_12">
+<div id="graph_wrapper" class="grid_12">
+<h2>
+  <%= link_to "1 Hour", "?hours=1" %>
+  <%= link_to "3 Hours", "?hours=3" %>
+  <%= link_to "6 Hours", "?hours=6" %>
+  <%= link_to "12 Hours", "?hours=12" %>
+  <%= link_to "24 Hours", "?hours=24" %>
+  <%= link_to "1 Week", "?hours=168" %>
+  <%= link_to "2 Weeks", "?hours=336" %>
+  <%= link_to "1 Month", "?hours=672" %>
+</h2>
+
+<h2>CPU Usage (<%= hours %> hours)</h2>
+
+<div id="cpu_usage" style="width:100%;height:200px;"></div>
+
+<script id="source" language="javascript" type="text/javascript">
+    var options = { xaxis: { mode: "time"},
+        yaxis: {max: 100},
+        selection: { mode: "x" },
+        legend: {show: true, width: 1, position: 'nw'}};
+    jQuery(function () {
+        var d1 = <%=@server.generic_graph("cpu_usage", hours)%>;
+        var cpu_usage = jQuery.plot(jQuery("#cpu_usage"), [
+            {data: d1, label: 'CPU Usage'}
+        ],
+                options);
+
+        jQuery("#cpu_usage").bind("plotselected", function (event, ranges) {
+            // do the zooming
+            cpu_usage = jQuery.plot(jQuery("#cpu_usage"), [
+                {data: d1, label: 'CPU Usage'}
+            ],
+                    jQuery.extend(true, {}, options, {
+                        xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                    }));
+
+            // don't fire event on the overview to prevent eternal loop
+            cpu_usage.setSelection(ranges, true);
+        });
+
+
+    });
+</script>
+
+<h2>Running Processes (<%= hours %> hours)</h2>
+
+<div id="running_procs" style="width:100%;height:200px;"></div>
+
+<script language="javascript" type="text/javascript">
+    jQuery(function () {
+        var d2 = <%=@server.generic_graph("running_procs", hours)%>;
+        var running_procs = jQuery.plot(jQuery("#running_procs"), [
+            {data: d2, label: 'Processes'}
+        ],
+                { xaxis: { mode: "time"},  selection: { mode: "x" },
+                    legend: {show: true, width: 1, position: 'nw'}});
+
+        jQuery("#running_procs").bind("plotselected", function (event, ranges) {
+            // do the zooming
+            running_procs = jQuery.plot(jQuery("#running_procs"), [
+                {data: d2, label: 'Processes'}
+            ],
+                    jQuery.extend(true, {}, options, {
+                        xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                    }));
+
+            // don't fire event on the overview to prevent eternal loop
+            running_procs.setSelection(ranges, true);
+        });
+    });
+</script>
+
+<h2>Network Usage (<%= hours %> hours)</h2>
+
+<div id="network" style="width:100%;height:200px;"></div>
+
+<script id="source" language="javascript" type="text/javascript">
+    jQuery(function () {
+        var d3 = <%=@server.generic_graph("net_in", hours, 8.0/1024.0/1024.0, true) %>;
+        var d4 = <%=@server.generic_graph("net_out", hours, 8.0/1024.0/1024.0, true) %>;
+        var network = jQuery.plot(jQuery("#network"), [
+            {data: d3, label: 'In (Mb/s)'},
+            {data: d4, label: 'Out (Mb/s)'}
+        ],
+                { xaxis: { mode: "time"},  selection: { mode: "x" },
+                    legend: {show: true, width: 1, position: 'nw'}});
+
+        jQuery("#network").bind("plotselected", function (event, ranges) {
+            // do the zooming
+            network = jQuery.plot(jQuery("#network"), [
+                {data: d3, label: 'In (Mb/s)'},
+                {data: d4, label: 'Out (Mb/s)'}
+            ],
+                    jQuery.extend(true, {}, { xaxis: { mode: "time"},  selection: { mode: "x" },
+                        legend: {show: true, width: 1, position: 'nw'}}, {
+                        xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                    }));
+
+            // don't fire event on the overview to prevent eternal loop
+            network.setSelection(ranges, true);
+        });
+    });
+</script>
+<% if @server.os != 'Windows' %>
+    <h2>IO Usage (<%= hours %> hours)</h2>
+
+    <div id="iousage" style="width:100%;height:200px;"></div>
+    <script id="source" language="javascript" type="text/javascript">
+        jQuery(function () {
+            var d5 = <%=@server.generic_graph("blk_writes", hours)%>;
+            var d6 = <%=@server.generic_graph("blk_reads", hours)%>;
+            var iousage = jQuery.plot(jQuery("#iousage"), [
+                {data: d5, label: 'Write Op/s'},
+                {data: d6, label: 'Read Op/s'}
+            ],
+                    { xaxis: { mode: "time"},  selection: { mode: "x" },
+                        legend: {show: true, width: 1, position: 'nw'}});
+
+            jQuery("#iousage").bind("plotselected", function (event, ranges) {
+                // do the zooming
+                iousage = jQuery.plot(jQuery("#iousage"), [
+                    {data: d5, label: 'Write Op/s'},
+                    {data: d6, label: 'Read Op/s'}
+                ],
+                        jQuery.extend(true, {}, options, {
+                            xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                        }));
+
+                // don't fire event on the overview to prevent eternal loop
+                iousage.setSelection(ranges, true);
+            });
+        });
+    </script>
+<% end %>
+<h2>Memory Usage (<%= hours %> hours)</h2>
+
+<div id="memory" style="width:100%;height:200px;"></div>
+<script id="source" language="javascript" type="text/javascript">
+    jQuery(function () {
+        var d7 = <%=@server.generic_graph("mem_used", hours, 1.0/1024.0/1024.0)%>;
+        var d8 = <%=@server.generic_graph("mem_used+mem_free", hours, 1.0/1024.0/1024.0)%>;
+        var memory = jQuery.plot(jQuery("#memory"), [
+            {data: d7, label: 'Used (MB)'},
+            {data: d8, label: 'Total (MB)'}
+        ],
+                { xaxis: { mode: "time"},  selection: { mode: "x" },
+                    legend: {show: true, width: 1, position: 'nw'}});
+
+        jQuery("#memory").bind("plotselected", function (event, ranges) {
+            // do the zooming
+            memory = jQuery.plot(jQuery("#memory"), [
+                {data: d7, label: 'Used (MB)'},
+                {data: d8, label: 'Total (MB)'}
+            ],
+                    jQuery.extend(true, {}, options, {
+                        xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                    }));
+
+            // don't fire event on the overview to prevent eternal loop
+            memory.setSelection(ranges, true);
+        });
+    });
+</script>
+
+<% if @server.os != 'Windows' %>
+    <h2>Server Load (<%= hours %> hours)</h2>
+
+    <div id="load" style="width:100%;height:200px;"></div>
+    <script id="source" language="javascript" type="text/javascript">
+        jQuery(function () {
+            var d9 = <%=@server.generic_graph("load_one",hours)%>;
+            var d10 = <%=@server.generic_graph("load_five",hours)%>;
+            var d11 = <%=@server.generic_graph("load_fifteen",hours)%>;
+            var load = jQuery.plot(jQuery("#load"), [
+                {data: d9, label: '1m'},
+                {data: d10, label: '5m'},
+                {data: d11, label: '15m'}
+            ],
+                    { xaxis: { mode: "time"},selection: { mode: "x" },
+                        legend: {show: true, width: 1, position: 'nw'}});
+
+            jQuery("#load").bind("plotselected", function (event, ranges) {
+                // do the zooming
+                load = jQuery.plot(jQuery("#load"), [
+                    {data: d9, label: '1m'},
+                    {data: d10, label: '5m'},
+                    {data: d11, label: '15m'}
+                ],
+                        jQuery.extend(true, {}, { xaxis: { mode: "time"},selection: { mode: "x" },
+                            legend: {show: true, width: 1, position: 'nw'}}, {
+                            xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                        }));
+
+                // don't fire event on the overview to prevent eternal loop
+                load.setSelection(ranges, true);
+            });
+        });
+    </script>
+<% end %>
+<h2>Network Connections (<%= hours %> hours)</h2>
+
+<div id="connections" style="width:100%;height:200px;"></div>
+<script id="source" language="javascript" type="text/javascript">
+    jQuery(function () {
+        var d12 = <%=@server.generic_graph("connections",hours)%>;
+        var connections = jQuery.plot(jQuery("#connections"), [
+            {data: d12, label: 'Connections'}
+        ],
+                { xaxis: { mode: "time"},  selection: { mode: "x" },
+                    legend: {show: true, width: 1, position: 'nw'}});
+
+        jQuery("#connections").bind("plotselected", function (event, ranges) {
+            // do the zooming
+            connections = jQuery.plot(jQuery("#connections"), [
+                {data: d12, label: 'Connections'}
+            ],
+                    jQuery.extend(true, {}, { xaxis: { mode: "time"},  selection: { mode: "x" },
+                        legend: {show: true, width: 1, position: 'nw'}}, {
+                        xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                    }));
+
+            // don't fire event on the overview to prevent eternal loop
+            connections.setSelection(ranges, true);
+        });
+    });
+</script>
+
+
+<h2>Disk Usage (<%= hours %> hours)</h2>
+
+<div id="disk" style="width:100%;height:200px;"></div>
+<script id="source" language="javascript" type="text/javascript">
+    jQuery(function () {
+        var d13 = <%=@server.generic_graph("disk_size", hours, (1.0/1024.0/1024.0/1024.0), true)%>;
+        var d14 = <%=@server.generic_graph("disk_used", hours, (1.0/1024.0/1024.0/1024.0), true)%>;
+        var disk = jQuery.plot(jQuery("#disk"), [
+            {data: d13, label: 'Total (GB)'},
+            {data: d14, label: 'Used (GB)'}
+        ],
+                { xaxis: { mode: "time"},  selection: { mode: "x" },
+                    legend: {show: true, width: 1, position: 'nw'}});
+
+        jQuery("#disk").bind("plotselected", function (event, ranges) {
+            // do the zooming
+            disk = jQuery.plot(jQuery("#disk"), [
+                {data: d13, label: 'Total (GB)'},
+                {data: d14, label: 'Used (GB)'}
+            ],
+                    jQuery.extend(true, {}, { xaxis: { mode: "time"},  selection: { mode: "x" },
+                        legend: {show: true, width: 1, position: 'nw'}}, {
+                        xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to }
+                    }));
+
+            // don't fire event on the overview to prevent eternal loop
+            disk.setSelection(ranges, true);
+        });
+    });
+</script>
+
+
+</div>
+</div>

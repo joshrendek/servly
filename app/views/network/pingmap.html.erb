@@ -1,0 +1,34 @@
+<table width="100%" align="center" border="0" cellspacing="0">
+  <tr id="tr" >
+    <th colspan="7">Network Pingmap</th>
+  </tr>
+  <% i = 0 %>
+  <% for s in @servers %>
+  
+    <% if i==0 %> <tr id="data" ><% end %>
+  
+  <% i+=1 %>
+    <td class="pmap" id="<%=s.id%>"><%=s.hostname%></td>
+    
+  
+  <% if i==7
+      i=0 %> 
+      </tr> 
+  <% end %>
+  <% end %> 
+</table>
+<script type="text/javascript">
+
+<% for s in @servers %>
+
+new Ajax.PeriodicalUpdater('<%=s.id%>', '/network/<%=s.id%>/do_pingmap/', 
+{ method: 'get', frequency: 20, decay: 1, 
+  onCreate: function() {
+  Effect.Pulsate('<%=s.id%>');
+ } 
+ 
+ })
+
+<% end %>
+</script>
+

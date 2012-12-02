@@ -1,0 +1,91 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+
+  #standards
+  show: "Show"
+  edit: "Edit"
+  destroy: "Destroy"
+  new: "New"
+
+  #navigation
+  dashboard: "Dashboard"
+  home: "Home"
+  logout: "Logout"
+  url_monitoring: "URL Monitoring"
+  list_monitor: "List Monitors"
+  new_monitor: "New Monitor"
+  server_monitoring: "Server Monitoring"
+  servers: "Servers"
+  groups: "Groups"
+  alerts: "Alerts"
+  tools: "Tools"
+  servly_agent: "Servly Agent"
+  ping_map: "Ping Map"
+  settings: "Settings"
+  users: "Users"
+  services: "Services"
+  teams: "Teams"
+  change_password: "Change Password"
+  search_for_server: "Search for server..."
+
+  #dashboard
+  health_overview: "Health Overview"
+  operating_system_overview: "Operating System Overview"
+  service_overview: "Service Overview"
+  collective_overview: "Collective Overview"
+  healthy_servers: "Healthy Servers"
+  dead_servers: "Dead Servers"
+  top_10_cpu: "Top 10 CPU"
+  top_10_memory: "Top 10 Memory"
+  top_10_network: "Top 10 Network"
+  top_10_disk: "Top 10 Disk"
+  number_cpus: "No. CPUs"
+  processor_usage: "Processor Usage"
+  pending_updates: "Pending Updates"
+  free_memory: "Free Memory"
+  used_memory: "Used Memory"
+  total_memory: "Total Memory"
+  free_diskspace: "Free Diskspace"
+  used_diskspace: "Used Diskspace"
+  total_diskspace: "Total Diskspace"
+  net_connections: "Net Connections"
+  net_in: "Net In"
+  net_out: "Net Out"
+  net_total: "Net Total"
+  cpu_usage: "CPU Usage"
+  network_usage: "Network Usage"
+  network_connections: "Network Connections"
+  network_uptime: "Network Uptime"
+
+  #graphs
+  total: "Total"
+  in: "In"
+  out: "Out"
+
+  #url_monitors
+  url_monitors: "URL Monitors"
+  url_monitor: "URL Monitor"
+  new_url_monitor: "New URL Monitor"
+  url: "URL"
+  keyword: "Keyword"
+  response_time: "Response Time"
+  create_url_monitor: "Create URL Monitor"
+
+  #servers
+  id: "ID"
+  os: "OS"
+  hostname: "Hostname"
+  ip: "IP"
+  cpu_usage: "CPU Usage"
+  disk: "Disk"
+  memory: "Memory"
+  net: "Net"
+  load: "Load"
+  connections: "Connections"
+  proc_count: "Proc. Count"
+  bandwidth: "Bandwidth"
+  pending_updates: "Pending Updates"
+
+

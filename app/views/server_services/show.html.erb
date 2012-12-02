@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Service name:</b>
+  <%= @server_service.service_name %>
+</p>
+
+<p>
+  <b>Domain:</b>
+  <%= @server_service.domain_id %>
+</p>
+
+<p>
+  <b>Service variable:</b>
+  <%= @server_service.service_variable %>
+</p>
+
+<p>
+  <b>Service type:</b>
+  <%= @server_service.service_type %>
+</p>
+
+
+<%= link_to 'Edit', edit_server_service_path(@server_service) %> |
+<%= link_to 'Back', server_services_path %>

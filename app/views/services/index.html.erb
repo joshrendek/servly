@@ -1,0 +1,29 @@
+<div class="grid_9">
+  <h1>Services</h1>
+</div>
+
+<div clas="grid_3" id="new_server_button">
+  <%= link_to raw("<button class='slick-black'>New Service</button>"), new_service_path %>
+</div>
+<table>
+  <tr>
+    <th>Service name</th>
+    <th>Service variable</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @services.each do |service| %>
+  <tr>
+    <td><%= service.service_name %></td>
+    <td><%= service.service_variable %></td>
+    <td><%= link_to 'Show', service %></td>
+    <td><%= link_to 'Edit', edit_service_path(service) %></td>
+    <td><%= link_to 'Destroy', service, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+

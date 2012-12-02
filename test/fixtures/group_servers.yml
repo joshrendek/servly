@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  server_id: 1
+  domain_id: 1
+  group_id: 1
+
+two:
+  server_id: 1
+  domain_id: 1
+  group_id: 1

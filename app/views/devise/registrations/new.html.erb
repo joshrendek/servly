@@ -1,0 +1,33 @@
+<div align="center">
+  <table id="login">
+  <tr>
+    <th colspan="2">Sign Up</th>
+  </tr>
+
+<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+  <%= devise_error_messages! %>
+
+  <tr>
+    <td><%= f.label :email %></td>
+    <td><%= f.email_field :email %></td>
+  </tr>
+
+  <tr>
+    <td><%= f.label :password %></td>
+    <td><%= f.password_field :password %></td>
+  </tr>
+
+  <tr>
+    <td><%= f.label :password_confirmation %></td>
+    <td><%= f.password_field :password_confirmation %></td>
+  </tr>
+  <tr>
+    <td colspan="2" class="actions loginactions">
+        <%= f.submit "Sign up" %>
+    </td>
+  </tr>
+        </table>
+
+<% end %>
+
+</div>

@@ -1,0 +1,28 @@
+<div class="grid_9">
+  <h1>Listing Group Permissions</h1>
+</div>
+<div class="grid_3">
+  <% form_for @dupg, :url => permissions_path(params[:id]) do |f| %>
+      <%= select('dupg', 'group_id', subdomain.groups.collect { |c| [c.name, c.id] }, {}, {:class => 'title'}) %>
+      <%= image_submit_tag '/images/heart_add.png' %>
+  <% end %>
+</div>
+
+<div class="clear"></div>
+<table>
+  <tr>
+    <th>Group</th>
+    <th></th>
+  </tr>
+
+  <% @domain_user_group_permissions.each do |domain_user_group_permission| %>
+      <% begin %>
+          <tr>
+            <td><%= domain_user_group_permission.group.name %></td>
+            <td><%= link_to 'Remove', permission_delete_permission_path(params[:id], :permission_id => domain_user_group_permission.id), :confirm => 'Are you sure?', :method => :delete %></td>
+          </tr>
+      <% rescue NoMethodError %>
+
+      <% end %>
+  <% end %>
+</table>

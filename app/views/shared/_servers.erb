@@ -1,0 +1,95 @@
+<meta http-equiv="refresh" content="30">
+<div class="grid_9">
+  <h1>
+    <%= controller.controller_name == 'groups' ? subdomain.groups.find(params[:id]).name + ' - ' : '' %>
+    Servers
+  </h1>
+   
+</div>
+
+<div class="pull-right">
+  <div>
+    <% if controller.controller_name == 'groups' %>
+      <%= form_for :gs, :url => {:action => "add_server"} do |f| %>
+        <%= select('gs', 'server_id', subdomain.servers.collect { |c| [c.hostname, c.id] }) %>
+        <%= f.submit "Add to Group" %>
+      <% end %>
+    <% else %>
+      <%= link_to "New Server", new_server_path, :class => "btn btn-primary"%>
+    <% end %>
+  </div>
+</div>
+
+<table width="100%" class="table">
+  <tr>
+    <th>ID</th>
+    <th>OS</th>
+    <th>Hostname</th>
+    <th>IP</th>
+    <th>CPU Usage</th>
+    <th>Disk</th>
+    <th>Memory</th>
+    <th>Net</th>
+    <th>Load</th>
+    <th>Connections</th>
+    <th>Proc. Count</th>
+    <th>Pending Updates</th>
+    <th>Updated</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @servers.each do |server| %>
+    <tr id="<%=server.id%>" class="<%= 'dead' unless server.updated_at > Time.now.advance(:minutes => -5) %>">
+      <td><%= server.id %></td>
+      <td><img width="15" height="15" src="/images/os/<%= Server.os_type(server.os) %>"/></td>
+      <td>
+        <%= controller_name == 'groups' ? link_to(server.hostname, group_server_path(params[:id], server.id)) : link_to(server.hostname, server) %>
+        <% if server.updated_at < Time.now.advance(:minutes => -5) %>
+          <span id="<%=server.id%>pinging" class="pinging">Pinging</span>
+        <% end %>
+      </td>
+      <td><%= server.ip %></td>
+      <td><%= raw Server.percent_display(server.cpu_usage) %></td>
+      <td><%= number_to_human_size(server.disk_size - server.disk_used) rescue nil %></td>
+      <td><%= number_to_human_size(server.mem_used) %> / <%= number_to_human_size(server.mem_used+server.mem_free) rescue nil %></td>
+      <td><%= number_to_human_size((server.net_out+server.net_in)*8).gsub("Bytes", "B") rescue nil %>it/s</td>
+      <td><%= "#{server.load_one} / #{server.load_five} / #{server.load_fifteen} " unless server.os == "Windows" %>
+      <td><%= server.connections %></td>
+      <td><%= server.running_procs %></td>
+      <td><%= server.pending_updates %></td>
+      <td><%= time_ago_in_words(server.updated_at) %></td>
+      <td><%= link_to raw("<img src='/images/script_edit.png'>"), edit_server_path(server) %></td>
+      <% if controller_name == 'groups' %>
+        <td><%= link_to raw("<img src='/images/cross.png'>"), remove_server_group_path(params[:id], :server_id => server.id), :confirm => 'Are you sure?', :method => :delete %></td>      
+      <% else %>
+        <td><%= link_to raw("<img src='/images/cross.png'>"), server, :confirm => 'Are you sure?', :method => :delete %></td>
+      <% end %>
+
+
+
+    </tr>
+    <% if server.updated_at < Time.now.advance(:minutes => -5) %>
+      <script type="text/javascript">
+        Effect.Pulsate('<%=server.id%>');
+        new Ajax.Request('<%=alive_server_path(server.id)%>', 
+            {
+method: 'get',
+onSuccess: function(transport){
+var response = transport.responseText;
+if (response == "true"){
+document.getElementById('<%=server.id%>').setAttribute("class", "");
+$('<%=server.id%>pinging').replace('<span class="pinging">OK</span>');
+}else{
+$('<%=server.id%>pinging').replace('<span class="pinging">FAILED</span>');    
+}
+}
+}
+);
+
+        </script>
+      <% end %>
+    <% end %>
+  </table>
+
+

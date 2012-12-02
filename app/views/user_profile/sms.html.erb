@@ -1,0 +1,24 @@
+<h1>SMS Settings</h1>
+
+<div align="center">
+  <table class="sms">
+    <tr>
+      <th>Cell Number</th>
+      <th>Carrier</th>
+      <th></th>
+      <th></th>
+    </tr>
+    <% form_for :sms, :url => update_sms_user_profile_index_path do |f| %>
+        <tr>
+          <td><%= f.text_field :phone, :value => current_user.phone %></td>
+          <td><%= f.select :gateway_id, SmsGateway.all.collect { |s| [s.carrier, s.id] }, :selected => current_user.sms_gateway_id %></td>
+          <td class="action">
+            <%= f.submit "Update" %>
+
+          </td>
+    <% end %>
+    <td><%= button_to "Test Message", test_sms_user_profile_index_path, :method => :get %></td>
+    </tr>
+
+  </table>
+</div>

@@ -1,0 +1,64 @@
+<div align="center">
+<table id="url_monitors">
+  <tr>
+    <th>Historical Response Time (12 hours)</th>
+    <th>Response Codes (12 hours)</th>    
+  </tr>
+  <tr>
+    <td width="75%">
+      <div id="graph_wrapper">
+          <div id="response_times" style="width:100%;height:120px;"></div>
+          <script id="source" language="javascript" type="text/javascript">
+            jQuery(function () {
+                var d1 = <%=@url_monitor.graph_response_times(12)%>;
+                jQuery.plot(jQuery("#response_times"), [{data: d1, label: 'Response Time (ms)'}],
+                { xaxis: { mode: "time"},
+                legend: {show: true, width: 1, position: 'nw'}});
+            });
+         </script>
+        </div>
+      </td>
+      <td width="25%">
+        <div id="graph_wrapper">      
+          <div id="status_codes" style="width:100%;height:120px;"></div>
+            <script id="source" language="javascript" type="text/javascript">
+              jQuery(function () {
+                jQuery.plot(jQuery("#status_codes"), [<%=@url_monitor.graph_status_codes(12)%>],{
+                  series: {
+			pie: { 
+				show: true
+			}
+		  }
+                  });
+                });
+           </script>
+      </td>
+    </tr>
+    <tr>
+    <td>Response Time</td>
+    <td><%= (@url_monitor.response_time*1000).round(2) rescue nil%>ms</td>
+  </tr>
+  <tr>
+    <td>Response</td>
+    <td></td>
+  <tr>
+    <td colspan="2"><%= text_area_tag :response_body, @url_monitor.current_run, :cols => '100%' %></td>
+  </tr>
+</table>
+  <h2>24 Hour Response History</h2>
+<table id="url_monitors">
+  <tr>
+    <th>Response Code</th>
+    <th>Response Time</th>
+    <th>Date</th>
+  </tr>
+<% @url_monitor.url_monitor_logs.order('id DESC').where(:created_at => Time.now.advance(:hours => -24)..Time.now).each do |u|%>
+    <tr>
+      <td><%=u.current_status%></td>
+      <td><%=(u.response_time*1000).round(2)%></td>
+      <td><%=u.created_at%></td>
+    </tr>
+<% end %>
+</table>
+</div>
+

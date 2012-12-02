@@ -1,0 +1,20 @@
+<div align="center">
+
+  <table id="edit_profile">
+  <tr>
+    <th colspan="2"><h1>Edit Profile</h1></th>
+  </tr>
+<%= form_for(:u, :url => update_profile_user_profile_index_path) do |f| %>
+  <tr>
+    <td>Timezone</td>
+    <td><%= time_zone_select( "u", "timezone", nil, :default => (current_user.timezone || 'Eastern Time (US & Canada)') ) %></td>
+  </tr>
+
+
+  <tr>
+    <td colspan="2" class="actions loginactions"><%= f.submit "Save Changes" %></td>
+  </tr>
+<% end %>
+
+</table>
+</div>

@@ -1,0 +1,54 @@
+<div class="grid_9">
+  <h1>Alerts</h1>
+</div>
+
+<div class="grid_3" id="new_server_button">
+  <%= link_to raw("<button class='slick-black'>New Alert</button>"), new_alert_path %>
+</div>
+<table>
+  <tr>
+    <th>Threshold stat</th>
+    <th></th>
+    <th>Threshold value</th>
+    <th>Active</th>
+    <th>Alerting</th>
+    <th>Targeting</th>
+    <th>Time</th>
+    <th></th>
+  </tr>
+
+<% @alerts.each do |alert| %>
+  <tr>
+    <td><%= alert.threshold_stat.titleize %></td>
+    <td><%= alert.operator == 'lt' ? '<' : '>' %></td>
+    <td>
+      <% if ['mem_free', 'mem_used', 'disk_size', 'disk_used'].include?(alert.threshold_stat) %>
+        <%=number_to_human_size(alert.threshold_value)%>
+      <% elsif ['net_in', 'net_out'].include?(alert.threshold_stat) %>
+        <%=number_to_human_size(alert.threshold_value*8).gsub("Bytes", "B")%>it/s
+      <% else %>
+        <%= alert.threshold_value %>
+      <% end %>
+    </td>
+    <td><%= alert.active == 1 ? 'Yes' : 'No' %></td>
+    <td><% if alert.alertable_type == 'Team'%>
+          <%= link_to alert.alertable.name, polymorphic_path(alert.alertable)  %>
+        <% elsif alert.alertable_type == 'Domain' %>
+          All Users
+        <% elsif alert.alertable_type == 'User' %>
+          <%=alert.alertable.email%>
+        <% end %></td>
+    <td>
+      <% if alert.targetable_type == 'Server' %>
+        <%=link_to alert.targetable.try(:hostname), alert.targetable %>
+      <% else %>
+        All Servers
+      <% end %>
+    </td>
+    <td><%= alert.start_time %> - <%= alert.end_time %></td>
+
+    <td><%= link_to 'Destroy', alert, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+

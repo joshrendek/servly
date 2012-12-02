@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  domain_id: 1
+  threshold_stat: MyString
+  threshold_value: 1
+
+two:
+  domain_id: 1
+  threshold_stat: MyString
+  threshold_value: 1

@@ -1,0 +1,2 @@
+module Sapi::UserHelper
+end

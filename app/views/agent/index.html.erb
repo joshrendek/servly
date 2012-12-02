@@ -1,0 +1,50 @@
+<div align="center"><h1 style="text-align: center;">Getting Started With the Servly Agent</h1>
+If you're just starting or already have added servers, this is the place to get the agent file to post your stats to the service.
+</div>
+<br /><br />
+<center>
+    <div id='agent_container'>
+
+    <h2><strong>Step 1. Choose Your Operation System</strong></h2>
+                     <div align="center">
+    <table width="100" cellspacing="0" cellpadding="0" class="agent_help">
+        <tr>
+            <td><img onclick="hide_agents();jQuery('#linux').show();" src="/images/os/Linux.png" width="67" height="67" /><br /><strong>Linux</strong></td>
+            <%#<td><img onclick="hide_agents();jQuery('#bsd').show();" src="/images/os/freebsd.png" width="67" height="67"><br /><strong>BSD</strong></td>#%>
+            <%#<td><img onclick="hide_agents();jQuery('#solaris').show();" src="/images/os/solaris.png"><br /><strong>Solaris</strong></td>%>
+            <%#<td><img onclick="hide_agents();jQuery('#osx').show();" src="/images/os/AppleBlue.png" width="67" height="67"><br /><strong>Mac OS X</strong></td> %>
+            <td><img onclick="hide_agents();jQuery('#windows').show();" src="/images/os/Windows.png" width="67" height="67"><br /><strong>Windows</strong></td>
+        </tr>
+      </table>
+          </div>
+    <br />
+    <div id="windows">
+      <%= render :partial => 'agent/distro_installs/windows' %>    
+    </div>
+
+
+    <% for c in @scripts %>
+    <script>
+    jQuery(document).ready(function() {
+      jQuery("#<%=c[:url]%>").hide();
+      jQuery("#<%=c[:url]%>source").hide();
+    });
+
+    </script>
+    <div id="<%=c[:url]%>">
+
+
+      <h2>Step 2. Download the agent</strong> <br /><br /><small style='font-size: 15px;'>
+
+      </h2>
+      
+  <input type="text" onclick="this.select();" id="download_agent" value="<%=@agent_dl%>" /><br />
+  <small><%=link_to 'View Source', agent_installer_url(:key => @key) %></small><br />
+
+      Right click to copy the install command (or highlight the text box), paste it, and run it.
+      <br /><br />
+    </div>
+
+</center>
+<% end %>
+  

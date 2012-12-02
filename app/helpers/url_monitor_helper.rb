@@ -1,0 +1,2 @@
+module UrlMonitorHelper
+end

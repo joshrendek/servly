@@ -1,0 +1,35 @@
+<div class="grid_9">
+  <h1><%=t(:url_monitors)%></h1>
+</div>
+
+<div class="pull-right">
+      <%= link_to "New URL Monitor", new_url_monitor_path, :class => "btn btn-primary"%>
+</div>
+
+
+<div class="clear"></div>
+<div align="center">
+<table id="url_monitors" class="table">
+  <tr>
+    <th><%=t(:url)%></th>
+    <th><%=t(:keyword)%></th>
+    <th><%=t(:response_time)%></th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @url_monitors.each do |url_monitor| %>
+  <tr>
+    <td><%= url_monitor.url %></td>
+    <td><%= url_monitor.keyword %></td>
+    <td><%= (url_monitor.response_time*1000).round(2) rescue nil %>ms</td>
+    <td><%= link_to t(:show), url_monitor %></td>
+    <td><%= link_to t(:edit), edit_url_monitor_path(url_monitor) %></td>
+    <td><%= link_to t(:destroy), url_monitor, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+</div>

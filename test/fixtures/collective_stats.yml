@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  domain_id: 1
+  net_in: 1
+  net_out: 1
+  net_total: 1
+  cpu_usage: 1.5
+  number_of_cpus: 1
+  memory_free: 1
+  memory_used: 1
+  net_connections: 1
+
+two:
+  domain_id: 1
+  net_in: 1
+  net_out: 1
+  net_total: 1
+  cpu_usage: 1.5
+  number_of_cpus: 1
+  memory_free: 1
+  memory_used: 1
+  net_connections: 1
