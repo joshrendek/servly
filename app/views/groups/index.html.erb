@@ -1,38 +1,40 @@
-<div class="grid_9">
+<div class="pull-left">
   <h1>Groups</h1>
 </div>
 
-<div clas="grid_3" id="new_server_button">
-  <%= link_to raw("<button class='slick-black'>New Group</button>"), new_group_path %>
+<div class="pull-right">
+  <%= link_to "New Group", new_group_path, :class => "btn btn-primary" %>
 </div>
 
 
 <div class="clear"></div>
 <% @groups.each do |group| %>
-<table>
-  <tr>
-    <th colspan="8" class="group_titles">
-        <%= link_to group.name, group %>
-    </th>
-
-    <th colspan="4" class="group_edit">
-    <%= link_to 'Edit', edit_group_path(group) %>
-    <%= link_to 'Destroy', group, :confirm => 'Are you sure?', :method => :delete %>
+  <table class="table">
+    <tr>
+      <th colspan="8" class="group_titles">
+        <%= link_to "<h3>#{group.name}</h4>".html_safe , group %>
       </th>
 
-  </tr>
-    <% i = 0; group.servers.each do |s| %>
-        <%= i == 0 ? raw('<tr>') : '' %>
-          <td class="groupservers"><%=link_to s.hostname, group_server_path(group.id, s.id)%></td>
-        <%= i == 11 ? raw('</tr>') : '' %>
-        <% i == 11 ? i = 0 : '' %>
+      <th colspan="4" class="group_edit">
+        <div class="pull-right">
+          <%= link_to 'Edit', edit_group_path(group), :class => "btn" %>
+          <%= link_to 'Destroy', group, :confirm => 'Are you sure?', :method => :delete, :class => "btn btn-danger"%>
+        </div>
+      </th>
 
-        <% i+=1  %>
-      <% end %>
+    </tr>
+    <% i = 0; group.servers.each do |s| %>
+      <%= i == 0 ? raw('<tr>') : '' %>
+        <td class="groupservers"><%=link_to s.hostname, group_server_path(group.id, s.id)%></td>
+        <%= i == 11 ? raw('</tr>') : '' %>
+      <% i == 11 ? i = 0 : '' %>
+
+      <% i+=1  %>
+    <% end %>
   </table>
 
   <div class="clear"></div>
-  
+
 <% end %>
 
 <br />

@@ -16,6 +16,9 @@ class Server < ActiveRecord::Base
   attr_accessible :domain_id, :group_id, :hostname, :ip, :location, :blk_reads, :net_out, :cpu_usage, :running_procs, :blk_writes, 
                   :mem_free, :load_fifteen, :pending_updates, :mem_used, :disk_used, :load_five, :disk_size, :connections, :net_in, :os, :ps, :kernel, :release, :uptime, :load_one, :number_of_cpus
 
+
+  validates_presence_of :ip
+
   def server_uptime(months = 1)
     total = months * 31 * 24 * 12 * 5
     100.0 - ((self.server_downtimes.where(:created_at => Time.now.advance(:months => -months)..Time.now).size.to_f)/total.to_f) * 100.0

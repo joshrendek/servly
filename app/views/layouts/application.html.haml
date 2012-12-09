@@ -2,9 +2,12 @@
 %html
   %head
     %title Servly
-    = stylesheet_link_tag "bootstrap.min"
+    = stylesheet_link_tag "bootstrap.min", "servly.css"
     = csrf_meta_tag
+    = javascript_include_tag :defaults
     = javascript_include_tag 'jquery-1.8.0.min'
+    = javascript_include_tag 'jquery.flot.min.js', 'jquery.flot.resize.min.js', 'jquery.flot.pie.min.js', 'jquery.flot.selection.js'
+    = javascript_include_tag 'jquery.bgiframe.min.js', 'jquery.ajaxQueue.js', 'jquery.autocomplete.js', 'thickbox-compressed.js', 'jquery.fancybox-1.3.4.pack', 'jquery-ui-1.8.23.custom.min.js'
     = javascript_include_tag "http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"
 
     :javascript
@@ -14,30 +17,58 @@
     .navbar.navbar-inverse.navbar-fixed-top
       .navbar-inner
         .container
+          .brand 
+            %img{:src => "/images/servly-32.png", :width => "24", :id => "servly_icon"}
+            =link_to "Servly", "/"
           .nav-collapse.subnav-collapse
             %ul.nav
-              %li= link_to t(:home), root_path
               %li.dropdown 
                 = link_to raw( t(:server_monitoring) + "<b class='caret'></b>"), "#", 
-                    :class => "dropdown-toggle", "data-toggle" => "dropdown"
+                  :class => "dropdown-toggle", "data-toggle" => "dropdown"
                 %ul.dropdown-menu 
                   %li= link_to t(:servers), servers_path 
                   %li= link_to t(:groups), groups_path
               %li.dropdown
                 = link_to raw( "Alerts" + "<b class='caret'></b>"), "#", 
-                    :class => "dropdown-toggle", "data-toggle" => "dropdown"
+                  :class => "dropdown-toggle", "data-toggle" => "dropdown"
                 %ul.dropdown-menu
                   %li= link_to "List Alerts", alerts_path
                   %li= link_to "New Alert", new_alert_path
-                  %li= link_to "New Triggered Alert", triggered_alerts_new_path
-                  %li= link_to "All Triggered Alert", triggered_alerts_index_path
+                  %li= link_to "New Triggered Alerts", triggered_alerts_new_path
+                  %li= link_to "All Triggered Alerts", triggered_alerts_index_path
 
-              %li= link_to t(:url_monitoring), url_monitors_path
-              %li= link_to t(:tools), "#"
-              %li= link_to t(:settings), "#"
+              %li.dropdown 
+                = link_to raw( t(:url_monitoring) + "<b class='caret'></b>"), "#", 
+                  :class => "dropdown-toggle", "data-toggle" => "dropdown"
+                %ul.dropdown-menu
+                  %li= link_to "All", url_monitors_path
+                  %li= link_to t(:new_monitor), new_url_monitor_path
 
+              %li.dropdown
+                = link_to raw( t(:tools) + "<b class='caret'></b>"), "#", 
+                  :class => "dropdown-toggle", "data-toggle" => "dropdown"
+                %ul.dropdown-menu 
+                  %li= link_to t(:servly_agent), agent_index_path
+                  %li= link_to t(:ping_map), pingmap_network_index_path
 
+              %li.dropdown 
+                = link_to raw( t(:settings) + "<b class='caret'></b>"), "#", 
+                  :class => "dropdown-toggle", "data-toggle" => "dropdown"
+                %ul.dropdown-menu
+                  = link_to t(:users), user_management_index_path
+                  = link_to t(:services), services_path 
+                  = link_to t(:teams), teams_path 
+                  = link_to "SMS Settings", sms_user_profile_index_path 
+                  = link_to "Profile", user_profile_index_path 
+                  = link_to "Edit Profile", user_profile_index_path 
+                  = link_to t(:change_password), edit_user_password_index_path 
+              %li= link_to t(:logout), destroy_user_session_path
 
+              .pull-right
+                - if !current_user.nil? 
+                  - if triggered_alert_count > 0 
+                    #header_error
+                      = link_to "#{triggered_alert_count} New Alerts", triggered_alerts_new_path, :class => "btn btn-danger" 
     .container-fluid
       .row-fluid
         = yield 

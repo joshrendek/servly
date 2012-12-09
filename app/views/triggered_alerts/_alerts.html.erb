@@ -1,46 +1,48 @@
-<h1>Triggered Alerts</h1>
+<div class="pull-left">
+  <h1>Triggered Alerts</h1>
+</div>
 <div align="center">
-  <table width="80%">
+  <table class="table">
     <tr>
       <th>Triggered At</th>
       <th>Trigger</th>
       <th>Trigger Cause</th>
     </tr>
     <% @trigger.each do |t| %>
-        <% if user_is_restricted_to_these_groups == 0 || (user_is_restricted_to_these_groups != 0 && (!t.triggerable.nil? && @servers.include?(t.triggerable.id))) %>
-            <% begin %>
-                <tr>
-                  <td><%= t.created_at %></td>
-                  <td>
-                    <% if t.alert_id != nil %>
-                        <%= t.alert.threshold_stat.titleize %>
-                        <%= t.alert.operator == 'lt' ? '<' : '>' %>
-                        <% if ['mem_free', 'mem_used', 'disk_size', 'disk_used'].include?(t.alert.threshold_stat) %>
-                            <%= number_to_human_size(t.alert.threshold_value) %>
-                        <% elsif ['net_in', 'net_out'].include?(t.alert.threshold_stat) %>
-                            <%= number_to_human_size(t.alert.threshold_value*8).gsub("Bytes", "B") %>it/s
-                        <% else %>
-                            <%= t.alert.threshold_value %>
-                        <% end %>
-                    <% else %>
-                        Server down.
-                    <% end %>
-                  </td>
-                  <td>
-                    <% begin %>
-                        <% if user_is_restricted_to_these_groups != 0 %>
-                            <%= t.triggerable.hostname %>
-                        <% else %>
-                            <%= link_to t.triggerable.hostname, t.triggerable %>
-                        <% end %>
-                    <% rescue %>
-                        Trigger cause no longer active.
-                    <% end %>
-                  </td>
-                </tr>
-            <% rescue; end %>
+      <% if user_is_restricted_to_these_groups == 0 || (user_is_restricted_to_these_groups != 0 && (!t.triggerable.nil? && @servers.include?(t.triggerable.id))) %>
+        <% begin %>
+          <tr>
+            <td><%= t.created_at %></td>
+            <td>
+              <% if t.alert_id != nil %>
+                <%= t.alert.threshold_stat.titleize %>
+                <%= t.alert.operator == 'lt' ? '<' : '>' %>
+                <% if ['mem_free', 'mem_used', 'disk_size', 'disk_used'].include?(t.alert.threshold_stat) %>
+                  <%= number_to_human_size(t.alert.threshold_value) %>
+                <% elsif ['net_in', 'net_out'].include?(t.alert.threshold_stat) %>
+                  <%= number_to_human_size(t.alert.threshold_value*8).gsub("Bytes", "B") %>it/s
+                <% else %>
+                  <%= t.alert.threshold_value %>
+                <% end %>
+              <% else %>
+                Server down.
+              <% end %>
+            </td>
+            <td>
+              <% begin %>
+                <% if user_is_restricted_to_these_groups != 0 %>
+                  <%= t.triggerable.hostname %>
+                <% else %>
+                  <%= link_to t.triggerable.hostname, t.triggerable %>
+                <% end %>
+              <% rescue %>
+                Trigger cause no longer active.
+              <% end %>
+            </td>
+          </tr>
+        <% rescue; end %>
         <% end %>
-    <% end %>
-  </table>
-  <%= paginate @trigger %>
-</div>
+      <% end %>
+    </table>
+    <%= paginate @trigger %>
+  </div>

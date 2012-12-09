@@ -20,7 +20,9 @@
       <tr>
         <td><%= f.text_field :url %></td>
         <td><%= f.text_field :keyword %></td>
-        <td class="actions"><%= f.submit t(controller.action_name) + " " + t(:url_monitor)%></td>
+        <td class="actions">
+          <%= f.submit t(controller.action_name) + " " + t(:url_monitor), :class => "btn btn-primary" %>
+        </td>
       </tr>
     </table>
   </center>

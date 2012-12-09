@@ -1,5 +1,10 @@
 Servly3::Application.routes.draw do
 
+
+  namespace :admin do 
+    root :to => "dashboard#index"
+  end
+
   get "status/elb_check"
 
   get "user/authorize"

@@ -1,0 +1,14 @@
+%table.table.table-bordered.table-condensed.table-striped
+  %thead
+    %tr 
+      %th Subdomain
+      %th Servers 
+      %th Alerts
+  %tbody 
+    - Domain.all.each do |domain| 
+      %tr 
+        %td=domain.subdomain
+        %td=domain.servers.count
+        %td=domain.alerts.count
+
+

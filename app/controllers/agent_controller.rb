@@ -27,13 +27,13 @@ class AgentController < ApplicationController
     file_name = params[:file]
     output = ""
     if file_name == 'core'
-      File.open(RAILS_ROOT + "/agents/servly_core.py", "r").each{ |f| output << f }
+      File.open(Rails.root + "agents/servly_core.py", "r").each{ |f| output << f }
       render :text => output
     elsif file_name == 'services'
-      File.open(RAILS_ROOT + "/agents/servly_services.py", "r").each{ |f| output << f }
+      File.open(Rails.root + "agents/servly_services.py", "r").each{ |f| output << f }
       render :text => output
     elsif file_name == 'agent'
-      File.open(RAILS_ROOT + "/agents/servly.py", "r").each{ |f| output << f }
+      File.open(Rails.root + "agents/servly.py", "r").each{ |f| output << f }
       output.gsub!('DOMAIN', Domain.find(subdomain_id).subdomain)
       output.gsub!('KEY', "?key="+@api_key)
 

@@ -1,5 +1,5 @@
-<div id="details_wrapper" class="grid_2">
-  <table width="100%" align="center" border="0" cellspacing="0">
+<div id="details_wrapper" class="span2">
+  <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
     <tr id="tr">
       <th colspan="2">CPU Information</th>
     </tr>
@@ -20,20 +20,22 @@
       <td><%= @server.running_procs %></td>
     </tr>
     <% if @server.os != "Windows" %>
-        <tr id="<%= Server.load_color(@server.load_one, @server.number_of_cpus) %>">
-          <td>Load Average (1m)</td>
-          <td><%= @server.load_one %></td>
-        </tr>
-        <tr id="<%= Server.load_color(@server.load_five, @server.number_of_cpus) %>">
-          <td>Load Average (5m)</td>
-          <td><%= @server.load_five %></td>
-        </tr>
-        <tr id="<%= Server.load_color(@server.load_fifteen, @server.number_of_cpus) %>">
-          <td>Load Average (15m)</td>
-          <td><%= @server.load_fifteen %></td>
-        </tr>
+      <tr id="<%= Server.load_color(@server.load_one, @server.number_of_cpus) %>">
+        <td>Load Average (1m)</td>
+        <td><%= @server.load_one %></td>
+      </tr>
+      <tr id="<%= Server.load_color(@server.load_five, @server.number_of_cpus) %>">
+        <td>Load Average (5m)</td>
+        <td><%= @server.load_five %></td>
+      </tr>
+      <tr id="<%= Server.load_color(@server.load_fifteen, @server.number_of_cpus) %>">
+        <td>Load Average (15m)</td>
+        <td><%= @server.load_fifteen %></td>
+      </tr>
     <% end %>
 
+  </table>
+  <table class="table table-striped table-condensed table-bordered">
     <tr id="tr">
       <th colspan="2">Network Usage</th>
     </tr>
@@ -56,7 +58,7 @@
 
   </table>
 
-  <table width="100%" align="center" border="0" cellspacing="0">
+  <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
     <tr id="tr">
       <th colspan="2">Memory</th>
     </tr>
@@ -69,6 +71,9 @@
       <td><%= number_to_human_size(@server.mem_used) %></td>
     </tr>
 
+
+  </table>
+  <table class="table table-striped table-condensed table-bordered">
 
     <tr id="tr">
       <th colspan="2">Disk</th>
@@ -98,8 +103,8 @@
 
 
 </div>
-<div id="details_wrapper" class="grid_6">
-  <table width="100%" align="center">
+<div id="details_wrapper" class="span6">
+  <table width="100%" align="center" class="table table-striped table-condensed table-bordered">
     <tr>
       <th>Service</th>
       <th>Status</th>
@@ -110,26 +115,26 @@
     </tr>
 
     <% i = 0; @server.server_services.each do |s| %>
-        <%= i%2 == 0 ? raw('<tr>') : '' %>
+      <%= i%2 == 0 ? raw('<tr>') : '' %>
         <td class="ss<%= s.id %>"><%= s.service.service_name %></td>
         <td class="ss<%= s.id %>"><%= s.status == 0 ? raw('<span id="red">Offline</span>') : raw('<span id="green">Online</a>') %></td>
         <td class="ss<%= s.id %>"><%= link_to raw("<img src='/images/heart_delete.png' />"), "javascript:delete_server_service(#{@server.id}, #{s.id})" %></td>
         <%= i%2 == 1 ? raw('</tr>') : '' %>
-        <% i+=1 %>
+      <% i+=1 %>
     <% end %>
 
     <tr>
       <td colspan='6' id='add_server_services'>
         <% form_for [@server, ServerService.new] do |f| %>
-            <%= select('server_service', 'service_id', subdomain.services.collect { |c| [c.service_name, c.id] }) %>
-            <%= image_submit_tag '/images/heart_add.png' %>
+          <%= select('server_service', 'service_id', subdomain.services.collect { |c| [c.service_name, c.id] }) %>
+          <%= image_submit_tag '/images/heart_add.png' %>
         <% end %>
       </td>
     </tr>
 
   </table>
 
-  <table width="100%" align="center" border="0" cellspacing="0">
+  <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
     <tr id="tr">
       <th colspan="2">Server Information</th>
     </tr>
@@ -171,10 +176,10 @@
     </tr>
   </table>
 
-  <table width="100%">
+  <table width="100%" class="table table-striped table-condensed table-bordered">
     <tr>
       <% if @server.os != 'Windows' %>
-          <th>User</th>
+        <th>User</th>
       <% end %>
       <th>PID</th>
       <th><%= @server.os == 'Windows' ? 'Process' : 'PPID' %></th>
@@ -182,186 +187,186 @@
       <th><%= @server.os == 'Windows' ? 'Private Memory' : 'VSZ' %></th>
       <th>%CPU</th>
       <% if @server.os != 'Windows' %>
-          <th>%MEM</th>
-          <th>COMMAND</th>
+        <th>%MEM</th>
+        <th>COMMAND</th>
       <% end %>
     </tr>
     <%
-       @ps = @server.ps.split(/(\n)+/) rescue nil
-       @ps.delete_at(0) if !@ps.nil?
+      @ps = @server.ps.split(/(\n)+/) rescue nil
+      @ps.delete_at(0) if !@ps.nil?
 
-       #handle nil case
-       @ps.nil? ? @ps = [] : @ps
+      #handle nil case
+      @ps.nil? ? @ps = [] : @ps
     %>
-    <% for ps in @ps.reverse
-           temp = ps.split(/(\w+)+/)
-           if @server.os == 'Windows'
-               temp = ps.split("||")
-           end
-           if !temp[1].nil? %>
-            <% if @server.os == 'Windows' %>
-                <tr class="<%= cycle('odd', 'even') %>">
-                  <td><%= temp[0] %></td>
-                  <td><%= temp[1] %></td>
-                  <td><%= number_to_human_size(temp[2].to_f) %></td>
-                  <td><%= number_to_human_size(temp[3].to_f) %></td>
-                  <td><%= temp[4] %></td>
-                </tr>
-            <% else %>
-                <tr class="<%= cycle('odd', 'even') %>">
-                  <td><%= temp[1] %></td>
-                  <td><%= temp[3] %></td>
-                  <td><%= temp[5] %></td>
-                  <td><%= number_to_human_size(temp[7].to_f*1024) %></td>
-                  <td><%= number_to_human_size(temp[9].to_f*1024) %></td>
-                  <td><%= temp[11] %></td>
-                  <td><%= temp[15] %></td>
-                  <td>
-                    <div style="width: 250px; overflow: hidden;"><%= begin
-                                                                         ; temp[18..-1].join('');
-                                                                     rescue;
-                                                                     end; %></div>
-                  </td>
-                </tr>
-            <% end %>
-        <%
+  <% for ps in @ps.reverse
+  temp = ps.split(/(\w+)+/)
+  if @server.os == 'Windows'
+    temp = ps.split("||")
+  end
+  if !temp[1].nil? %>
+<% if @server.os == 'Windows' %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%= temp[0] %></td>
+    <td><%= temp[1] %></td>
+    <td><%= number_to_human_size(temp[2].to_f) %></td>
+    <td><%= number_to_human_size(temp[3].to_f) %></td>
+    <td><%= temp[4] %></td>
+  </tr>
+<% else %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%= temp[1] %></td>
+    <td><%= temp[3] %></td>
+    <td><%= temp[5] %></td>
+    <td><%= number_to_human_size(temp[7].to_f*1024) %></td>
+    <td><%= number_to_human_size(temp[9].to_f*1024) %></td>
+    <td><%= temp[11] %></td>
+    <td><%= temp[15] %></td>
+    <td>
+      <div style="width: 250px; overflow: hidden;"><%= begin
+                                                         ; temp[18..-1].join('');
+                                                       rescue;
+                                                       end; %></div>
+                                                   </td>
+                                                 </tr>
+                                               <% end %>
+                                               <%
            end
            end %>
-  </table>
+       </table>
 
 
-</div>
+     </div>
 
 
-<div id="graph_wrapper" class="grid_4">
-  <h4>CPU Usage (12 hour)</h4>
+     <div id="graph_wrapper" class="span4">
+       <h4>CPU Usage (12 hour)</h4>
 
-  <div id="cpu_usage" style="width:100%;height:120px;"></div>
+       <div id="cpu_usage" style="width:100%;height:120px;"></div>
 
-  <script id="source" language="javascript" type="text/javascript">
-      jQuery(function () {
-          var d1 = <%=@server.generic_graph("cpu_usage", 12)%>;
-          jQuery.plot(jQuery("#cpu_usage"), [
-              {data: d1, label: 'CPU Usage'}
-          ],
-                  { xaxis: { mode: "time"},
-                      yaxis: {max: 100},
-                      legend: {show: true, width: 1, position: 'nw'}});
+       <script id="source" language="javascript" type="text/javascript">
+         jQuery(function () {
+             var d1 = <%=@server.generic_graph("cpu_usage", 12)%>;
+             jQuery.plot(jQuery("#cpu_usage"), [
+               {data: d1, label: 'CPU Usage'}
+               ],
+               { xaxis: { mode: "time"},
+yaxis: {max: 100},
+legend: {show: true, width: 1, position: 'nw'}});
+             });
+</script>
+
+<h4>Running Processes (12 hour)</h4>
+
+<div id="running_procs" style="width:100%;height:120px;"></div>
+
+<script id="source" language="javascript" type="text/javascript">
+  jQuery(function () {
+      var d1 = <%=@server.generic_graph("running_procs", 12)%>;
+      jQuery.plot(jQuery("#running_procs"), [
+        {data: d1, label: 'Processes'}
+        ],
+        { xaxis: { mode: "time"},
+legend: {show: true, width: 1, position: 'nw'}});
       });
-  </script>
+</script>
 
-  <h4>Running Processes (12 hour)</h4>
+<h4>Network Usage (12 hour)</h4>
 
-  <div id="running_procs" style="width:100%;height:120px;"></div>
+<div id="network" style="width:100%;height:120px;"></div>
 
-  <script id="source" language="javascript" type="text/javascript">
-      jQuery(function () {
-          var d1 = <%=@server.generic_graph("running_procs", 12)%>;
-          jQuery.plot(jQuery("#running_procs"), [
-              {data: d1, label: 'Processes'}
-          ],
-                  { xaxis: { mode: "time"},
-                      legend: {show: true, width: 1, position: 'nw'}});
+<script id="source" language="javascript" type="text/javascript">
+  jQuery(function () {
+      var d1 = <%=@server.server_graph_net_in(12)%>;
+      var d2 = <%=@server.server_graph_net_out(12)%>;
+      jQuery.plot(jQuery("#network"), [
+        {data: d1, label: 'In (Mb/s)'},
+        {data: d2, label: 'Out (Mb/s)'}
+        ],
+        { xaxis: { mode: "time"},
+legend: {show: true, width: 1, position: 'nw'}});
       });
-  </script>
+</script>
+<% if @server.os != 'Windows' %>
+  <h4>IO Usage (12 hour)</h4>
 
-  <h4>Network Usage (12 hour)</h4>
-
-  <div id="network" style="width:100%;height:120px;"></div>
-
+  <div id="iousage" style="width:100%;height:120px;"></div>
   <script id="source" language="javascript" type="text/javascript">
-      jQuery(function () {
-          var d1 = <%=@server.server_graph_net_in(12)%>;
-          var d2 = <%=@server.server_graph_net_out(12)%>;
-          jQuery.plot(jQuery("#network"), [
-              {data: d1, label: 'In (Mb/s)'},
-              {data: d2, label: 'Out (Mb/s)'}
+    jQuery(function () {
+        var d1 = <%=@server.server_graph_blk_writes(12)%>;
+        var d2 = <%=@server.server_graph_blk_reads(12)%>;
+        jQuery.plot(jQuery("#iousage"), [
+          {data: d1, label: 'Write Op/s'},
+          {data: d2, label: 'Read Op/s'}
           ],
-                  { xaxis: { mode: "time"},
-                      legend: {show: true, width: 1, position: 'nw'}});
-      });
-  </script>
-  <% if @server.os != 'Windows' %>
-      <h4>IO Usage (12 hour)</h4>
-
-      <div id="iousage" style="width:100%;height:120px;"></div>
-      <script id="source" language="javascript" type="text/javascript">
-          jQuery(function () {
-              var d1 = <%=@server.server_graph_blk_writes(12)%>;
-              var d2 = <%=@server.server_graph_blk_reads(12)%>;
-              jQuery.plot(jQuery("#iousage"), [
-                  {data: d1, label: 'Write Op/s'},
-                  {data: d2, label: 'Read Op/s'}
-              ],
-                      { xaxis: { mode: "time"},
-                          legend: {show: true, width: 1, position: 'nw'}});
-          });
-      </script>
+          { xaxis: { mode: "time"},
+legend: {show: true, width: 1, position: 'nw'}});
+        });
+</script>
   <% end %>
   <h4>Memory Usage (12 hour)</h4>
 
   <div id="memory" style="width:100%;height:120px;"></div>
   <script id="source" language="javascript" type="text/javascript">
-      jQuery(function () {
-          var d1 = <%=@server.server_graph_mem_used(12)%>;
-          var d2 = <%=@server.server_graph_mem_total(12)%>;
-          jQuery.plot(jQuery("#memory"), [
-              {data: d1, label: 'Used (MB)'},
-              {data: d2, label: 'Total (MB)'}
+    jQuery(function () {
+        var d1 = <%=@server.server_graph_mem_used(12)%>;
+        var d2 = <%=@server.server_graph_mem_total(12)%>;
+        jQuery.plot(jQuery("#memory"), [
+          {data: d1, label: 'Used (MB)'},
+          {data: d2, label: 'Total (MB)'}
           ],
-                  { xaxis: { mode: "time"},
-                      legend: {show: true, width: 1, position: 'nw'}});
-      });
-  </script>
-  <% if @server.os != 'Windows' %>
-      <h4>Server Load (12 hour)</h4>
+          { xaxis: { mode: "time"},
+legend: {show: true, width: 1, position: 'nw'}});
+        });
+</script>
+<% if @server.os != 'Windows' %>
+  <h4>Server Load (12 hour)</h4>
 
-      <div id="load" style="width:100%;height:120px;"></div>
-      <script id="source" language="javascript" type="text/javascript">
-          jQuery(function () {
-              var d1 = <%=@server.server_graph_load_one(12)%>;
-              var d2 = <%=@server.server_graph_load_five(12)%>;
-              var d3 = <%=@server.server_graph_load_fifteen(12)%>;
-              jQuery.plot(jQuery("#load"), [
-                  {data: d1, label: '1m'},
-                  {data: d2, label: '5m'},
-                  {data: d3, label: '15m'}
-              ],
-                      { xaxis: { mode: "time"},
-                          legend: {show: true, width: 1, position: 'nw'}});
-          });
-      </script>
+  <div id="load" style="width:100%;height:120px;"></div>
+  <script id="source" language="javascript" type="text/javascript">
+    jQuery(function () {
+        var d1 = <%=@server.server_graph_load_one(12)%>;
+        var d2 = <%=@server.server_graph_load_five(12)%>;
+        var d3 = <%=@server.server_graph_load_fifteen(12)%>;
+        jQuery.plot(jQuery("#load"), [
+          {data: d1, label: '1m'},
+          {data: d2, label: '5m'},
+          {data: d3, label: '15m'}
+          ],
+          { xaxis: { mode: "time"},
+legend: {show: true, width: 1, position: 'nw'}});
+        });
+</script>
   <% end %>
   <h4>Network Connections (12 hour)</h4>
 
   <div id="connections" style="width:100%;height:120px;"></div>
   <script id="source" language="javascript" type="text/javascript">
-      jQuery(function () {
-          var d1 = <%=@server.server_graph_connections(12)%>;
-          jQuery.plot(jQuery("#connections"), [
-              {data: d1, label: 'Connections'}
+    jQuery(function () {
+        var d1 = <%=@server.server_graph_connections(12)%>;
+        jQuery.plot(jQuery("#connections"), [
+          {data: d1, label: 'Connections'}
           ],
-                  { xaxis: { mode: "time"},
-                      legend: {show: true, width: 1, position: 'nw'}});
+          { xaxis: { mode: "time"},
+legend: {show: true, width: 1, position: 'nw'}});
+        });
+</script>
+
+
+<h4>Disk Usage (12 hour)</h4>
+
+<div id="disk" style="width:100%;height:120px;"></div>
+<script id="source" language="javascript" type="text/javascript">
+  jQuery(function () {
+      var d1 = <%=@server.server_graph_disk_size(12)%>;
+      var d2 = <%=@server.server_graph_disk_used(12)%>;
+      jQuery.plot(jQuery("#disk"), [
+        {data: d1, label: 'Total (GB)'},
+        {data: d2, label: 'Used (GB)'}
+        ],
+        { xaxis: { mode: "time"},
+legend: {show: true, width: 1, position: 'nw'}});
       });
-  </script>
-
-
-  <h4>Disk Usage (12 hour)</h4>
-
-  <div id="disk" style="width:100%;height:120px;"></div>
-  <script id="source" language="javascript" type="text/javascript">
-      jQuery(function () {
-          var d1 = <%=@server.server_graph_disk_size(12)%>;
-          var d2 = <%=@server.server_graph_disk_used(12)%>;
-          jQuery.plot(jQuery("#disk"), [
-              {data: d1, label: 'Total (GB)'},
-              {data: d2, label: 'Used (GB)'}
-          ],
-                  { xaxis: { mode: "time"},
-                      legend: {show: true, width: 1, position: 'nw'}});
-      });
-  </script>
+</script>
 
 
 </div>

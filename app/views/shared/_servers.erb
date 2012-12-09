@@ -1,5 +1,5 @@
 <meta http-equiv="refresh" content="30">
-<div class="grid_9">
+<div class="pull-left">
   <h1>
     <%= controller.controller_name == 'groups' ? subdomain.groups.find(params[:id]).name + ' - ' : '' %>
     Servers
@@ -20,7 +20,7 @@
   </div>
 </div>
 
-<table width="100%" class="table">
+<table width="100%" class="table table-striped table-condensed table-bordered">
   <tr>
     <th>ID</th>
     <th>OS</th>
@@ -40,7 +40,7 @@
   </tr>
 
   <% @servers.each do |server| %>
-    <tr id="<%=server.id%>" class="<%= 'dead' unless server.updated_at > Time.now.advance(:minutes => -5) %>">
+    <tr id="<%=server.id%>" class="<%= 'error' unless server.updated_at > Time.now.advance(:minutes => -5) %>">
       <td><%= server.id %></td>
       <td><img width="15" height="15" src="/images/os/<%= Server.os_type(server.os) %>"/></td>
       <td>

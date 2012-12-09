@@ -1,33 +1,33 @@
 <div align="center">
-<%= form_for(@server) do |f| %>
-  <% if @server.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@server.errors.count, "error") %> prohibited this server from being saved:</h2>
+  <%= form_for(@server, :class => "form") do |f| %>
+    <% if @server.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@server.errors.count, "error") %> prohibited this server from being saved:</h2>
 
-      <ul>
-      <% @server.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+        <ul>
+          <% @server.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
-  <table id="new_form">
-    <tr>
-      <th>Hostname</th>
-      <th>IP</th>
-      <th>Location</th>
-      <th></th>
-    </tr>
-    <tr>
-      <td><%= f.text_field :hostname, :class => 'title' %></td>
-      <td><%= f.text_field :ip, :class => 'title'  %></td>
-      <td><%= f.text_field :location, :class => 'title'  %></td>
-      <td><div class="actions">
-            <%= f.submit "#{button_verb} Server", :class => "slick-black" %>
+    <table >
+      <tr>
+        <th>Hostname</th>
+        <th>IP</th>
+        <th>Location</th>
+        <th></th>
+      </tr>
+      <tr>
+        <td><%= f.text_field :hostname, :class => 'title' %></td>
+        <td><%= f.text_field :ip, :class => 'title'  %></td>
+        <td><%= f.text_field :location, :class => 'title'  %></td>
+        <td><div class="actions">
+            <%= f.submit "#{button_verb} Server", :class => "btn btn-primary" %>
           </div>
-      </td>
-    </tr>
-  </table>
-<% end %>
+        </td>
+      </tr>
+    </table>
+  <% end %>
 </div>

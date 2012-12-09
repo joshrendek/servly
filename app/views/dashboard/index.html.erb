@@ -2,21 +2,25 @@
   <div class="row-fluid">
 
     <div class="span4">
-      <table width="100%" align="center" border="0" cellspacing="0">
-        <tr id="tr">
-          <th colspan="2"><%= t(:health_overview) %></th>
-        </tr>
-        <tr id="healthy" class="healthy">
-          <td><%= t(:healthy_servers) %></td>
-          <td><%= link_to @healthy, healthy_servers_path %></td>
-        </tr>
-        <tr id="dead" class="<%= @dead > 0 ? 'dead' : '' %>">
-          <td><%= t(:dead_servers) %></td>
-          <td><%= link_to @dead, dead_servers_path %></td>
-        </tr>
+      <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
+        <thead>
+          <tr id="tr">
+            <th colspan="2"><%= t(:health_overview) %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="healthy" class="healthy">
+            <td><%= t(:healthy_servers) %></td>
+            <td><%= link_to @healthy, healthy_servers_path %></td>
+          </tr>
+          <tr id="dead" class="<%= @dead > 0 ? 'error' : '' %>">
+            <td><%= t(:dead_servers) %></td>
+            <td><%= link_to @dead, dead_servers_path %></td>
+          </tr>
+        </tbody>
       </table>
       <br/>
-      <table width="100%" align="center" border="0" cellspacing="0">
+      <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
         <tr id="tr">
           <th colspan="2"><%= t(:operating_system_overview) %></th>
         </tr>
@@ -30,7 +34,7 @@
       <% end %>
     </table>
     <br/>
-    <table width="100%" align="center" border="0" cellspacing="0">
+    <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
       <tr id="tr">
         <th colspan="4"><%= t(:service_overview) %></th>
       </tr>
@@ -45,7 +49,7 @@
     </div>
 
     <div class="span4">
-      <table width="100%" align="center" border="0" cellspacing="0">
+      <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
         <tr id="tr">
           <th colspan="2"><%= t(:collective_overview) %></th>
         </tr>
@@ -138,71 +142,111 @@ lineWidth: 1
 }},
 legend: {show: true, width: 1, position: 'nw'}});
           });
-</script>
+        </script>
 
-<h4><%= t(:network_usage) %> (24 hour)</h4>
+        <h4><%= t(:network_usage) %> (24 hour)</h4>
 
-<div id="network" style="width:100%;height:120px;"></div>
+        <div id="network" style="width:100%;height:120px;"></div>
 
-<script id="source" language="javascript" type="text/javascript">
-  jQuery(function () {
-      var d1 = <%=CollectiveStat.net_in(24, subdomain_id)%>;
-      var d2 = <%=CollectiveStat.net_out(24, subdomain_id)%>;
-      var d3 = <%=CollectiveStat.net_total(24, subdomain_id)%>;
+        <script id="source" language="javascript" type="text/javascript">
+          jQuery(function () {
+              var d1 = <%=CollectiveStat.net_in(24, subdomain_id)%>;
+              var d2 = <%=CollectiveStat.net_out(24, subdomain_id)%>;
+              var d3 = <%=CollectiveStat.net_total(24, subdomain_id)%>;
 
-      jQuery.plot(jQuery("#network"), [
-        {data: d1, label: '<%=t(:in)%> (Mb/s)'},
-        {data: d2, label: '<%=t(:out)%> (Mb/s)'},
-        {data: d3, label: '<%=t(:total)%> (Mb/s)'}
-        ],
-        { xaxis: { mode: "time"}, series: {
+              jQuery.plot(jQuery("#network"), [
+                {data: d1, label: '<%=t(:in)%> (Mb/s)'},
+                {data: d2, label: '<%=t(:out)%> (Mb/s)'},
+                {data: d3, label: '<%=t(:total)%> (Mb/s)'}
+                ],
+                { xaxis: { mode: "time"}, series: {
 lines: {
 lineWidth: 1
 }},
 legend: {show: true, width: 1, position: 'nw'}});
-      });
-</script>
+              });
+            </script>
 
-<h4><%= t(:network_connections) %> (24 hour)</h4>
+            <h4><%= t(:network_connections) %> (24 hour)</h4>
 
-<div id="netconn" style="width:100%;height:120px;"></div>
-<script id="source" language="javascript" type="text/javascript">
-  jQuery(function () {
-      var d1 = <%=CollectiveStat.connections(24, subdomain_id)%>;
-      jQuery.plot(jQuery("#netconn"), [
-        {data: d1}
-        ],
-        { xaxis: { mode: "time"},
+            <div id="netconn" style="width:100%;height:120px;"></div>
+            <script id="source" language="javascript" type="text/javascript">
+              jQuery(function () {
+                  var d1 = <%=CollectiveStat.connections(24, subdomain_id)%>;
+                  jQuery.plot(jQuery("#netconn"), [
+                    {data: d1}
+                    ],
+                    { xaxis: { mode: "time"},
 series: {
 lines: {
 lineWidth: 1
 }},
 legend: {show: true, width: 1, position: 'nw'}});
-      });
-</script>
+                  });
+                </script>
               </div>
 
-            <div class="row">
-              <div class="span3">
-                <table width="100%" align="center" border="0" cellspacing="0">
-                  <tr id="tr">
-                    <th colspan="2"><%= t(:top_10_cpu) %></th>
-                  </tr>
-                  <% for s in @topten_cpu %>
+              <div class="row">
+                <div class="span3">
+                  <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
+                    <tr id="tr">
+                      <th colspan="2"><%= t(:top_10_cpu) %></th>
+                    </tr>
+                    <% for s in @topten_cpu %>
+                      <tr>
+                        <td><%= link_to s.hostname, server_url(s.id) %></td>
+                        <td><%= raw Server.percent_display((s.cpu_usage).round) rescue nil %></td>
+                      </tr>
+                    <% end %>
+                  </table>
+                </div>
+
+                <div class="span3">
+                  <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
+                    <tr id="tr">
+                      <th colspan="2"><%= t(:top_10_memory) %></th>
+                    </tr>
+                    <% for s in @topten_memory %>
+                      <%
+                        t1 = number_to_human_size(s[1])
+                        t2 = number_to_human_size(s[2])
+                        tt1 = t1.split(' ')
+                        tt2 = t2.split(' ')
+                        if tt1[1] == tt2[1]
+                          tmp = tt1[0] + "/" + tt2[0] + " " + tt2[1]
+                        else
+                          tmp = t1 + "/" + t2
+                        end
+
+                      %>
                     <tr>
-                      <td><%= link_to s.hostname, server_url(s.id) %></td>
-                      <td><%= raw Server.percent_display((s.cpu_usage).round) rescue nil %></td>
+                      <td><%= link_to Server.find(s[3]).hostname, server_url(s[3]) %></td>
+                      <td style="text-align: right"><%= raw Server.colorize(tmp, (100*(s[0]))) %></td>
                     </tr>
                   <% end %>
                 </table>
               </div>
 
               <div class="span3">
-                <table width="100%" align="center" border="0" cellspacing="0">
+                <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
                   <tr id="tr">
-                    <th colspan="2"><%= t(:top_10_memory) %></th>
+                    <th colspan="2"><%= t(:top_10_network) %></th>
                   </tr>
-                  <% for s in @topten_memory %>
+                  <% for s in @topten_net %>
+                    <tr>
+                      <td><%= link_to Server.find(s[1]).hostname, server_url(s[1]) %></td>
+                      <td><%= number_to_human_size(s[0]*8).gsub("Bytes", "B") %>it/s</td>
+                    </tr>
+                  <% end %>
+                </table>
+              </div>
+
+              <div class="span3">
+                <table width="100%" align="center" border="0" cellspacing="0" class="table table-striped table-condensed table-bordered">
+                  <tr id="tr">
+                    <th colspan="2"><%= t(:top_10_disk) %></th>
+                  </tr>
+                  <% for s in @topten_disk %>
                     <%
                       t1 = number_to_human_size(s[1])
                       t2 = number_to_human_size(s[2])
@@ -215,54 +259,14 @@ legend: {show: true, width: 1, position: 'nw'}});
                       end
 
                     %>
+
                   <tr>
                     <td><%= link_to Server.find(s[3]).hostname, server_url(s[3]) %></td>
                     <td style="text-align: right"><%= raw Server.colorize(tmp, (100*(s[0]))) %></td>
                   </tr>
                 <% end %>
               </table>
-            </div>
-
-            <div class="span3">
-              <table width="100%" align="center" border="0" cellspacing="0">
-                <tr id="tr">
-                  <th colspan="2"><%= t(:top_10_network) %></th>
-                </tr>
-                <% for s in @topten_net %>
-                  <tr>
-                    <td><%= link_to Server.find(s[1]).hostname, server_url(s[1]) %></td>
-                    <td><%= number_to_human_size(s[0]*8).gsub("Bytes", "B") %>it/s</td>
-                  </tr>
-                <% end %>
-              </table>
-            </div>
-
-            <div class="span3">
-              <table width="100%" align="center" border="0" cellspacing="0">
-                <tr id="tr">
-                  <th colspan="2"><%= t(:top_10_disk) %></th>
-                </tr>
-                <% for s in @topten_disk %>
-                  <%
-                    t1 = number_to_human_size(s[1])
-                    t2 = number_to_human_size(s[2])
-                    tt1 = t1.split(' ')
-                    tt2 = t2.split(' ')
-                    if tt1[1] == tt2[1]
-                      tmp = tt1[0] + "/" + tt2[0] + " " + tt2[1]
-                    else
-                      tmp = t1 + "/" + t2
-                    end
-
-                  %>
-
-                <tr>
-                  <td><%= link_to Server.find(s[3]).hostname, server_url(s[3]) %></td>
-                  <td style="text-align: right"><%= raw Server.colorize(tmp, (100*(s[0]))) %></td>
-                </tr>
-              <% end %>
             </table>
-          </table>
+          </div>
         </div>
       </div>
-    </div>

@@ -1,11 +1,11 @@
-<div class="grid_9">
+<div class="pull-left">
   <h1>Alerts</h1>
 </div>
 
-<div class="grid_3" id="new_server_button">
-  <%= link_to raw("<button class='slick-black'>New Alert</button>"), new_alert_path %>
+<div class="pull-right">
+  <%= link_to "New Alert", new_alert_path, :class => "btn btn-primary" %>
 </div>
-<table>
+<table class="table">
   <tr>
     <th>Threshold stat</th>
     <th></th>
