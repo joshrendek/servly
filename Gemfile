@@ -51,7 +51,7 @@ group :test do
     gem 'capybara'
     gem 'database_cleaner'
     gem 'launchy'
-    gem 'rack-test', :git => 'https://github.com/hassox/rack-test.git'
+    # gem 'rack-test', :git => 'https://github.com/hassox/rack-test.git'
 end
 
 group :development do
